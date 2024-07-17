@@ -10,16 +10,19 @@ type NodeVariableItemProps = {
   node: Node
   varName: string
   showBorder?: boolean
+  className?: string
 }
 const NodeVariableItem = ({
   node,
   varName,
   showBorder,
+  className,
 }: NodeVariableItemProps) => {
   return (
     <div className={cn(
       'relative flex items-center mt-0.5 h-6 bg-gray-100 rounded-md  px-1 text-xs font-normal text-gray-700',
       showBorder && '!bg-black/[0.02]',
+      className,
     )}>
       <div className='flex items-center'>
         <div className='p-[1px]'>
