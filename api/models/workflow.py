@@ -190,6 +190,10 @@ class Workflow(db.Model):
 
     @property
     def environment_variables(self) -> Sequence[Variable]:
+        if not self._environment_variables:
+            self._environment_variables = '{}'
+            return []
+
         # FIXME: get current user from flask context, may not a good way.
         user = contexts.current_user.get()
 
