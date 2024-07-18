@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useChatWithHistoryContext } from '../context'
 import Form from './form'
@@ -8,9 +8,13 @@ import { MessageDotsCircle } from '@/app/components/base/icons/src/vender/solid/
 import { Edit02 } from '@/app/components/base/icons/src/vender/line/general'
 import { Star06 } from '@/app/components/base/icons/src/vender/solid/shapes'
 import LogoSite from '@/app/components/base/logo/logo-site'
+import { usePathname } from 'next/navigation'
+import SwrInitor from '@/app/components/swr-initor'
 
 const ConfigPanel = () => {
   const { t } = useTranslation()
+  const pathname = usePathname()  
+
   const {
     appData,
     inputsForms,
@@ -22,7 +26,18 @@ const ConfigPanel = () => {
   const customConfig = appData?.custom_config
   const site = appData?.site
 
+  useEffect(()=>{
+    const consoleTokenFromLocalStorage = localStorage?.getItem('console_token')
+    console.log('111111111111', consoleTokenFromLocalStorage)
+    console.log('window.location.href', pathname)
+    if (!consoleTokenFromLocalStorage){
+      const loginRedirectUrl = pathname        // window.location.href
+      localStorage?.setItem('loginRedirectUrl', loginRedirectUrl)
+    }
+  },[])
+
   return (
+    <SwrInitor> 
     <div className='flex flex-col max-h-[80%] w-full max-w-[720px]'>
       <div
         className={`
@@ -163,6 +178,7 @@ const ConfigPanel = () => {
         )
       }
     </div>
+    </SwrInitor> 
   )
 }
 

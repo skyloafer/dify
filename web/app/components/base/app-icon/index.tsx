@@ -13,6 +13,7 @@ export type AppIconProps = {
   icon?: string
   background?: string
   className?: string
+  pageType?: boolean
   innerIcon?: React.ReactNode
   onClick?: () => void
 }
@@ -24,6 +25,7 @@ const AppIcon: FC<AppIconProps> = ({
   background,
   className,
   innerIcon,
+  pageType,
   onClick,
 }) => {
   return (
@@ -34,8 +36,12 @@ const AppIcon: FC<AppIconProps> = ({
         rounded && style.rounded,
         className ?? '',
       )}
-      style={{
+      style={pageType ? {
         background,
+        width: 100,
+        height: 100,
+      } :{
+        background
       }}
       onClick={onClick}
     >

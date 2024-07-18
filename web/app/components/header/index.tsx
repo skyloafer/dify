@@ -18,6 +18,7 @@ import LogoSite from '@/app/components/base/logo/logo-site'
 import useBreakpoints, { MediaType } from '@/hooks/use-breakpoints'
 import { useProviderContext } from '@/context/provider-context'
 import { useModalContext } from '@/context/modal-context'
+import './index.css'
 
 const navClassName = `
   flex items-center relative mr-0 sm:mr-3 px-3 h-8 rounded-xl
@@ -26,7 +27,7 @@ const navClassName = `
 `
 
 const Header = () => {
-  const { isCurrentWorkspaceEditor } = useAppContext()
+  const { isCurrentWorkspaceEditor, isCurrentWorkspaceDatasetOperator } = useAppContext()
 
   const selectedSegment = useSelectedLayoutSegment()
   const media = useBreakpoints()
@@ -47,7 +48,7 @@ const Header = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedSegment])
   return (
-    <div className='flex flex-1 items-center justify-between px-4'>
+    <div className='flex flex-1 items-center justify-between px-4 h54'>
       <div className='flex items-center'>
         {isMobile && <div
           className='flex items-center justify-center h-8 w-8 cursor-pointer'
@@ -58,8 +59,9 @@ const Header = () => {
         {!isMobile && <>
           <Link href="/apps" className='flex items-center mr-4'>
             <LogoSite className='object-contain' />
+            <span className='logoText'>交付中心AI交付作业平台</span>
           </Link>
-          <GithubStar />
+          {/* <GithubStar /> */}
         </>}
       </div>
       {isMobile && (
@@ -67,15 +69,15 @@ const Header = () => {
           <Link href="/apps" className='flex items-center mr-4'>
             <LogoSite />
           </Link>
-          <GithubStar />
+          {/* <GithubStar /> */}
         </div>
       )}
       {!isMobile && (
         <div className='flex items-center'>
-          <ExploreNav className={navClassName} />
-          <AppNav />
-          {isCurrentWorkspaceEditor && <DatasetNav />}
-          <ToolsNav className={navClassName} />
+          {(isCurrentWorkspaceEditor || isCurrentWorkspaceDatasetOperator) && <ExploreNav className={navClassName} />}
+          {(isCurrentWorkspaceEditor || isCurrentWorkspaceDatasetOperator) && <AppNav />}
+          {(isCurrentWorkspaceEditor || isCurrentWorkspaceDatasetOperator) && <DatasetNav />}
+          {(isCurrentWorkspaceEditor || isCurrentWorkspaceDatasetOperator) && <ToolsNav className={navClassName} />}
         </div>
       )}
       <div className='flex items-center flex-shrink-0'>
@@ -91,10 +93,10 @@ const Header = () => {
       </div>
       {(isMobile && isShowNavMenu) && (
         <div className='w-full flex flex-col p-2 gap-y-1'>
-          <ExploreNav className={navClassName} />
-          <AppNav />
-          {isCurrentWorkspaceEditor && <DatasetNav />}
-          <ToolsNav className={navClassName} />
+          {!isCurrentWorkspaceDatasetOperator && <ExploreNav className={navClassName} />}
+          {!isCurrentWorkspaceDatasetOperator && <AppNav />}
+          {(isCurrentWorkspaceEditor || isCurrentWorkspaceDatasetOperator) && <DatasetNav />}
+          {!isCurrentWorkspaceDatasetOperator && <ToolsNav className={navClassName} />}
         </div>
       )}
     </div>

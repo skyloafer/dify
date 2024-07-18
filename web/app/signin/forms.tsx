@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation'
 import cn from 'classnames'
 import NormalForm from './normalForm'
 import OneMoreStep from './oneMoreStep'
+import style from './forms.module.css'
 
 const Forms = () => {
   const searchParams = useSearchParams()
@@ -20,9 +21,10 @@ const Forms = () => {
   }
   return <div className={
     cn(
-      'flex flex-col items-center w-full grow justify-center',
-      'px-6',
-      'md:px-[108px]',
+      style.fromContainer,
+      'flex flex-col items-center grow justify-center bg-white shadow rounded-2xl',
+      'my-20',
+      'md:px-[60px]',
     )
   }>
     <div className='flex flex-col md:w-[400px]'>

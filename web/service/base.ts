@@ -63,6 +63,7 @@ export type IOnTextReplace = (textReplace: TextReplaceResponse) => void
 
 export type IOtherOptions = {
   isPublicAPI?: boolean
+  isLocalApi?: boolean
   bodyStringify?: boolean
   needAllResponseContent?: boolean
   deleteContentType?: boolean
@@ -314,6 +315,9 @@ const baseFetch = <T>(
   if (body && bodyStringify)
     options.body = JSON.stringify(body)
 
+  if(urlWithPrefix.includes('app-list.json')){
+    urlWithPrefix = '/data/app-list.json'
+  }
   // Handle timeout
   return Promise.race([
     new Promise((resolve, reject) => {
@@ -499,7 +503,7 @@ export const ssePost = (
   const { body } = options
   if (body)
     options.body = JSON.stringify(body)
-
+    
   globalThis.fetch(urlWithPrefix, options as RequestInit)
     .then((res) => {
       if (!/^(2|3)\d{2}$/.test(String(res.status))) {
@@ -541,8 +545,12 @@ export const request = <T>(url: string, options = {}, otherOptions?: IOtherOptio
 }
 
 // request methods
-export const get = <T>(url: string, options = {}, otherOptions?: IOtherOptions) => {
+export const get = <T>(url: string, options = {}, otherOptions?: IOtherOptions) => {  
   return request<T>(url, Object.assign({}, options, { method: 'GET' }), otherOptions)
+}
+
+export const getLocal = <T>(url: string, options = {}, otherOptions?: IOtherOptions) => {  
+  return request<T>(url, Object.assign({}, options, { method: 'GET' }), { ...otherOptions, isLocalApi: true })
 }
 
 // For public API

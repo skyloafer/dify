@@ -5,11 +5,15 @@ import { useRouter } from 'next/navigation'
 import classNames from 'classnames'
 import useSWR from 'swr'
 import Link from 'next/link'
+import {
+  RiLockLine,
+  RiMailLine,
+} from '@remixicon/react'
 import Toast from '../components/base/toast'
 import style from './page.module.css'
 import { IS_CE_EDITION, SUPPORT_MAIL_LOGIN, apiPrefix, emailRegex } from '@/config'
 import Button from '@/app/components/base/button'
-import { login, oauth } from '@/service/common'
+import { login, oauth, fetchUserProfile } from '@/service/common'
 import { getPurifyHref } from '@/utils'
 
 type IState = {
@@ -96,7 +100,25 @@ const NormalForm = () => {
       })
       if (res.result === 'success') {
         localStorage.setItem('console_token', res.data)
-        router.replace('/apps')
+        const profile = await fetchUserProfile({
+          url: '/account/profile',
+          params: {
+          }
+        });
+        if(profile){
+          const result = await profile.json()
+          if(result){
+            localStorage.setItem('user_profile', JSON.stringify(result))
+          }
+        }
+        const consoleTokenFromLocalStorage = localStorage?.getItem('loginRedirectUrl')
+        if (consoleTokenFromLocalStorage) {
+          router.replace(consoleTokenFromLocalStorage)
+          localStorage.removeItem('loginRedirectUrl')
+        }
+        else {
+          router.replace('/apps')
+        }
       }
       else {
         Toast.notify({
@@ -208,7 +230,8 @@ const NormalForm = () => {
                   <label htmlFor="email" className="my-2 block text-sm font-medium text-gray-900">
                     {t('login.email')}
                   </label>
-                  <div className="mt-1">
+                  <div className="relative mt-1">
+                    <RiMailLine className='absolute top-3 left-2 shrink-0 ml-[1px] mr-[5px] w-3.5 h-3.5 text-gray-400' />
                     <input
                       value={email}
                       onChange={e => setEmail(e.target.value)}
@@ -216,12 +239,12 @@ const NormalForm = () => {
                       type="email"
                       autoComplete="email"
                       placeholder={t('login.emailPlaceholder') || ''}
-                      className={'appearance-none block w-full rounded-lg pl-[14px] px-3 py-2 border border-gray-200 hover:border-gray-300 hover:shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 placeholder-gray-400 caret-primary-600 sm:text-sm'}
+                      className={'appearance-none block w-full indent-3 rounded-lg pl-[14px] px-3 py-2 border border-gray-200 hover:border-gray-300 hover:shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 placeholder-gray-400 caret-primary-600 sm:text-sm'}
                     />
                   </div>
                 </div>
 
-                <div className='mb-4'>
+                <div className='mb-8'>
                   <label htmlFor="password" className="my-2 flex items-center justify-between text-sm font-medium text-gray-900">
                     <span>{t('login.password')}</span>
                     <Link href='/forgot-password' className='text-primary-600'>
@@ -229,6 +252,7 @@ const NormalForm = () => {
                     </Link>
                   </label>
                   <div className="relative mt-1">
+                    <RiLockLine className='absolute top-3 left-2 shrink-0 ml-[1px] mr-[5px] w-3.5 h-3.5 text-gray-400' />
                     <input
                       id="password"
                       value={password}
@@ -240,9 +264,9 @@ const NormalForm = () => {
                       type={showPassword ? 'text' : 'password'}
                       autoComplete="current-password"
                       placeholder={t('login.passwordPlaceholder') || ''}
-                      className={'appearance-none block w-full rounded-lg pl-[14px] px-3 py-2 border border-gray-200 hover:border-gray-300 hover:shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 placeholder-gray-400 caret-primary-600 sm:text-sm pr-10'}
+                      className={'appearance-none block w-full indent-3 rounded-lg pl-[14px] px-3 py-2 border border-gray-200 hover:border-gray-300 hover:shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 placeholder-gray-400 caret-primary-600 sm:text-sm pr-10'}
                     />
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                    {/* <div className="absolute inset-y-0 right-0 flex items-center pr-3">
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
@@ -250,7 +274,7 @@ const NormalForm = () => {
                       >
                         {showPassword ? '👀' : '😝'}
                       </button>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
 
@@ -260,7 +284,7 @@ const NormalForm = () => {
                     variant='primary'
                     onClick={handleEmailPasswordLogin}
                     disabled={isLoading}
-                    className="w-full"
+                    className="w-full h-9"
                   >{t('login.signBtn')}</Button>
                 </div>
               </form>

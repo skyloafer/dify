@@ -16,9 +16,13 @@ import Confirm from '@/app/components/base/confirm'
 import RenameModal from '@/app/components/base/chat/chat-with-history/sidebar/rename-modal'
 
 // import { init } from 'https://unpkg.com/@waline/client@v3/dist/waline.js';
-import { init } from './waline.js';
+import { init } from '@waline/client';
 
 import './waline.css';
+
+
+
+
 
 const Sidebar = () => {
   const { t } = useTranslation()
@@ -67,55 +71,38 @@ const Sidebar = () => {
       handleRenameConversation(showRename.id, newName, { onSuccess: handleCancelRename })
   }, [showRename, handleRenameConversation, handleCancelRename])
 
-  // const { data: userProfileResponse } = useSWR({ url: '/account/profile', params: {} }, fetchUserProfile)  
+  const { data: userProfileResponse } = useSWR({ url: '/account/profile', params: {} }, fetchUserProfile)  
 
-  // const updateUserProfileAndVersion = useCallback(async () => {
-  //   if (userProfileResponse && !userProfileResponse.bodyUsed) {
-  //     const result = await userProfileResponse.json()
-  //     if (result) {
-  //       init({
-  //         el: '#waline',
-  //         serverURL: 'https://wss.so/waline/',
-  //         login: 'disable',
-  //         meta: ['nick', 'mail'],
-  //         userInfo: {
-  //           email: result?.email,
-  //           nick: result?.name
-  //         },
-  //         pageSize: 5,
-  //       });    
-  //       // quoteComment({
-  //       //   selector: ".wl-editor",
-  //       //   content: 'test'
-  //       // })  
-  //     }        
+  const updateUserProfileAndVersion = useCallback(async () => {
+    if (userProfileResponse && !userProfileResponse.bodyUsed) {
+      const result = await userProfileResponse.json()
+      if (result) {
+        console.log('userInfo', result)       
+        init({
+          el: '#waline',
+          serverURL: 'http://wss.so:8360/',
+          // 此处可以配置更多配置，参考Waline官方文档...
+          login: 'disable',
+          meta: ['nick', 'mail'],
+          userInfo: {
+            email: result?.email,
+            nick: result?.name
+          },
+          pageSize: 5,
+        });    
+        // quoteComment({
+        //   selector: ".wl-editor",
+        //   content: 'test'
+        // })  
+      }        
 
-  //   }
-  // }, [userProfileResponse])
-
-  const initProfile = () =>{
-    let userProfile = localStorage.getItem('user_profile');
-    if(userProfile){
-      let result = JSON.parse(userProfile);
-      init({
-        el: '#waline',
-        serverURL: 'https://wss.so/waline/',
-        login: 'disable',
-        meta: ['nick', 'mail'],
-        userInfo: {
-          email: result?.email,
-          nick: result?.name
-        },
-        pageSize: 5,
-      });
     }
-  }
+  }, [userProfileResponse])  
 
   useEffect(()=>{
     // const result = await userProfileResponse.json()    
-    // updateUserProfileAndVersion()
-    initProfile();
-  }, [])
+    updateUserProfileAndVersion()
+  }, [updateUserProfileAndVersion, userProfileResponse])
 
   return (
     <div className='overflow-y-auto shrink-0 h-full flex flex-col w-[360px] border-r border-r-gray-100'>

@@ -1,5 +1,5 @@
 import type { Fetcher } from 'swr'
-import { del, get, patch, post, put } from './base'
+import { del, get, patch, post, put, getLocal } from './base'
 import type {
   AccountIntegrate,
   ApiBasedExtension,
@@ -224,6 +224,10 @@ export const deleteModelProviderModel: Fetcher<CommonResponse, { url: string }> 
 
 export const getPayUrl: Fetcher<{ url: string }, string> = (url) => {
   return get<{ url: string }>(url)
+}
+
+export const getJson: Fetcher<{ url: string }, string> = (url) => {
+  return getLocal<{ url: string }>(url)
 }
 
 export const fetchDefaultModal: Fetcher<{ data: DefaultModelResponse }, string> = (url) => {

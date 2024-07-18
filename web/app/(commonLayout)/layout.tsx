@@ -19,7 +19,9 @@ const Layout = ({ children }: { children: ReactNode }) => {
             <ProviderContextProvider>
               <ModalContextProvider>
                 <HeaderWrapper>
+                  <div style={{ backgroundColor: '#FFF' }}>
                   <Header />
+                  </div>
                 </HeaderWrapper>
                 {children}
               </ModalContextProvider>
