@@ -18,8 +18,8 @@ COPY yarn.lock .
 
 # if you located in China, you can use taobao registry to speed up
 # RUN yarn install --frozen-lockfile --registry https://registry.npmmirror.com/
-RUN yarn config set proxy http://192.168.208.55:10809
-RUN yarn config set https-proxy http://192.168.208.55:10809
+# RUN yarn config set proxy http://192.168.208.55:10809
+# RUN yarn config set https-proxy http://192.168.208.55:10809
 RUN yarn install --frozen-lockfile
 
 # build resources
