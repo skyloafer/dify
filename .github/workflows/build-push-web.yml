@@ -19,7 +19,7 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     if: github.repository == 'skyloafer/dify'
     strategy:
       matrix:
@@ -85,7 +85,7 @@ jobs:
 
   create-manifest:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     if: github.repository == 'skyloafer/dify'
     strategy:
       matrix:
