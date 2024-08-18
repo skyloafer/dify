@@ -13,6 +13,7 @@ import Sidebar from './sidebar'
 import HeaderInMobile from './header-in-mobile'
 import ConfigPanel from './config-panel'
 import ChatWrapper from './chat-wrapper'
+import { AiDeliveryProvider } from '@/context/ai-delivery-context'
 import type { InstalledApp } from '@/models/explore'
 import Loading from '@/app/components/base/loading'
 import useBreakpoints, { MediaType } from '@/hooks/use-breakpoints'
@@ -212,10 +213,12 @@ const ChatWithHistoryWrapWithCheckToken: FC<ChatWithHistoryWrapProps> = ({
     return <AppUnavailable isUnknownReason={isUnknownReason} />
 
   return (
-    <ChatWithHistoryWrap
-      installedAppInfo={installedAppInfo}
-      className={className}
-    />
+    <AiDeliveryProvider>
+      <ChatWithHistoryWrap
+        installedAppInfo={installedAppInfo}
+        className={className}
+      />
+    </AiDeliveryProvider>
   )
 }
 

@@ -36,10 +36,12 @@ import type {
 } from '@/models/share'
 import { addFileInfos, sortAgentSorts } from '@/app/components/tools/utils'
 import { useToastContext } from '@/app/components/base/toast'
+import { useAiDeliveryContext } from '@/context/ai-delivery-context'
 import { changeLanguage } from '@/i18n/i18next-config'
 
 export const useChatWithHistory = (installedAppInfo?: InstalledApp) => {
   const isInstalledApp = useMemo(() => !!installedAppInfo, [installedAppInfo])
+  const { isIframe } = useAiDeliveryContext()
   const { data: appInfo, isLoading: appInfoLoading, error: appInfoError } = useSWR(installedAppInfo ? null : 'appInfo', fetchAppInfo)
 
   const appData = useMemo(() => {
@@ -245,12 +247,13 @@ export const useChatWithHistory = (installedAppInfo?: InstalledApp) => {
     currentChatInstanceRef.current.handleStop()
     setNewConversationId('')
     handleConversationIdInfoChange(conversationId)
+    console.log(isIframe, 'isIframe')
 
     if (conversationId === '' && !checkInputsRequired(true))
       setShowConfigPanelBeforeChat(true)
     else
       setShowConfigPanelBeforeChat(false)
-  }, [handleConversationIdInfoChange, setShowConfigPanelBeforeChat, checkInputsRequired])
+  }, [handleConversationIdInfoChange, setShowConfigPanelBeforeChat, checkInputsRequired, isIframe])
   const handleNewConversation = useCallback(() => {
     currentChatInstanceRef.current.handleStop()
     setNewConversationId('')
