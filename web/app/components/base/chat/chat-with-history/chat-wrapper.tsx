@@ -8,6 +8,7 @@ import { useChat } from '../chat/hooks'
 import { useChatWithHistoryContext } from './context'
 import Header from './header'
 import ConfigPanel from './config-panel'
+import { useAiDeliveryContext } from '@/context/ai-delivery-context'
 import {
   fetchSuggestedQuestions,
   getUrl,
@@ -31,6 +32,8 @@ const ChatWrapper = () => {
     currentChatInstanceRef,
     appData,
   } = useChatWithHistoryContext()
+  // 判断是否加载至iframe
+  const { isIframe } = useAiDeliveryContext()
   const appConfig = useMemo(() => {
     const config = appParams || {}
 
@@ -68,6 +71,10 @@ const ChatWrapper = () => {
       conversation_id: currentConversationId,
     }
 
+    // 若加载至iframe中，需向父容器传递信息
+    if (isIframe && !!window)
+      window.parent.postMessage(JSON.stringify({ ...data, postType: 'doSend' }), '*')
+
     if (appConfig?.file_upload?.image.enabled && files?.length)
       data.files = files
 
@@ -81,6 +88,7 @@ const ChatWrapper = () => {
       },
     )
   }, [
+    isIframe,
     appConfig,
     currentConversationId,
     currentConversationItem,
