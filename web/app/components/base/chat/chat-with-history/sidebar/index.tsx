@@ -6,8 +6,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import { useChatWithHistoryContext } from '../context'
 import List from './list'
-import useSWR from 'swr'
-import { fetchUserProfile } from '@/service/common'
+import { init } from './waline.js'
 import AppIcon from '@/app/components/base/app-icon'
 import Button from '@/app/components/base/button'
 import { Edit05 } from '@/app/components/base/icons/src/vender/line/general'
@@ -16,9 +15,8 @@ import Confirm from '@/app/components/base/confirm'
 import RenameModal from '@/app/components/base/chat/chat-with-history/sidebar/rename-modal'
 
 // import { init } from 'https://unpkg.com/@waline/client@v3/dist/waline.js';
-import { init } from './waline.js';
 
-import './waline.css';
+import './waline.css'
 
 const Sidebar = () => {
   const { t } = useTranslation()
@@ -67,7 +65,7 @@ const Sidebar = () => {
       handleRenameConversation(showRename.id, newName, { onSuccess: handleCancelRename })
   }, [showRename, handleRenameConversation, handleCancelRename])
 
-  // const { data: userProfileResponse } = useSWR({ url: '/account/profile', params: {} }, fetchUserProfile)  
+  // const { data: userProfileResponse } = useSWR({ url: '/account/profile', params: {} }, fetchUserProfile)
 
   // const updateUserProfileAndVersion = useCallback(async () => {
   //   if (userProfileResponse && !userProfileResponse.bodyUsed) {
@@ -83,20 +81,20 @@ const Sidebar = () => {
   //           nick: result?.name
   //         },
   //         pageSize: 5,
-  //       });    
+  //       });
   //       // quoteComment({
   //       //   selector: ".wl-editor",
   //       //   content: 'test'
-  //       // })  
-  //     }        
+  //       // })
+  //     }
 
   //   }
   // }, [userProfileResponse])
 
-  const initProfile = () =>{
-    let userProfile = localStorage.getItem('user_profile');
-    if(userProfile){
-      let result = JSON.parse(userProfile);
+  const initProfile = useCallback(() => {
+    const userProfile = localStorage.getItem('user_profile')
+    if (userProfile) {
+      const result = JSON.parse(userProfile)
       init({
         el: '#waline',
         serverURL: 'https://wss.so/waline/',
@@ -104,17 +102,18 @@ const Sidebar = () => {
         meta: ['nick', 'mail'],
         userInfo: {
           email: result?.email,
-          nick: result?.name
+          nick: result?.name,
         },
         pageSize: 5,
-      });
+      })
     }
-  }
+  }, [])
 
-  useEffect(()=>{
-    // const result = await userProfileResponse.json()    
+  useEffect(() => {
+    // const result = await userProfileResponse.json()
     // updateUserProfileAndVersion()
-    initProfile();
+    // 下面这段代码用于初始化评论控件
+    // initProfile();
   }, [])
 
   return (
@@ -145,6 +144,7 @@ const Sidebar = () => {
         </Button>
       </div>
       <div className='grow px-4 py-2 overflow-y-auto'>
+        {/* 置顶记录 */}
         {
           !!pinnedConversationList.length && (
             <div className='mb-4'>
@@ -159,6 +159,7 @@ const Sidebar = () => {
             </div>
           )
         }
+        {/* 非置顶记录 */}
         {
           !!conversationList.length && (
             <List
@@ -171,7 +172,7 @@ const Sidebar = () => {
           )
         }
       </div>
-      <div className='pb-4 text-xs'>    
+      <div className='pb-4 text-xs'>
         <div id="waline">
 
         </div>
