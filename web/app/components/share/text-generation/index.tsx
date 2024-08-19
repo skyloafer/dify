@@ -36,6 +36,7 @@ import { DEFAULT_VALUE_MAX_LEN, appDefaultIconBackground } from '@/config'
 import Toast from '@/app/components/base/toast'
 import type { VisionFile, VisionSettings } from '@/types/app'
 import { Resolution, TransferMethod } from '@/types/app'
+import { useAiDeliveryContext } from '@/context/ai-delivery-context'
 
 const GROUP_SIZE = 5 // to avoid RPM(Request per minute) limit. The group task finished then the next group.
 enum TaskStatus {
@@ -69,6 +70,7 @@ const TextGeneration: FC<IMainProps> = ({
   const { notify } = Toast
 
   const { t } = useTranslation()
+  const { isIframe } = useAiDeliveryContext()
   const media = useBreakpoints()
   const isPC = media === MediaType.pc
   const isTablet = media === MediaType.tablet
@@ -135,6 +137,9 @@ const TextGeneration: FC<IMainProps> = ({
     setAllTaskList([]) // clear batch task running status
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
     showResSidebar()
+    // 若加载至iframe中，需向父容器传递信息
+    if (isIframe && !!window)
+      window.parent.postMessage(JSON.stringify({ postType: 'handleSend' }), '*')
   }
 
   const [controlRetry, setControlRetry] = useState(0)
@@ -289,6 +294,9 @@ const TextGeneration: FC<IMainProps> = ({
       notify({ type: 'info', message: t('appDebug.errorMessage.waitForBatchResponse') })
       return
     }
+    // 若加载至iframe中，需向父容器传递信息
+    if (isIframe && !!window)
+      window.parent.postMessage(JSON.stringify({ postType: 'handleRunBatch' }), '*')
 
     const payloadData = data.filter(item => !item.every(i => i === '')).slice(1)
     const varLen = promptConfig?.prompt_variables.length || 0
