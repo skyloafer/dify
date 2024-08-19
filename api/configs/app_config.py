@@ -62,4 +62,4 @@ class DifyConfig(
 
     MODERATION_BUFFER_SIZE: int = Field(default=300, description='The buffer size for moderation.')
 
-    MAX_VARIABLE_SIZE: int = Field(default=5 * 1024, description='The maximum size of a variable. default is 5KB.')
+    MAX_VARIABLE_SIZE: int = Field(default=100 * 1024, description='The maximum size of a variable. default is 5KB.')
