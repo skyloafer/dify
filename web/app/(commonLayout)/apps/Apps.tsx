@@ -92,6 +92,11 @@ const Apps = () => {
     }
   }, [])
 
+  useEffect(() => {
+    if (isCurrentWorkspaceDatasetOperator)
+      return router.replace('/datasets')
+  }, [isCurrentWorkspaceDatasetOperator])
+
   const hasMore = data?.at(-1)?.has_more ?? true
   useEffect(() => {
     let observer: IntersectionObserver | undefined

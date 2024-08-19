@@ -2,7 +2,6 @@
 import React, { useEffect, useReducer, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/navigation'
-import classNames from 'classnames'
 import useSWR from 'swr'
 import Link from 'next/link'
 import {
@@ -11,6 +10,7 @@ import {
 } from '@remixicon/react'
 import Toast from '../components/base/toast'
 import style from './page.module.css'
+import classNames from '@/utils/classnames'
 import { IS_CE_EDITION, SUPPORT_MAIL_LOGIN, apiPrefix, emailRegex } from '@/config'
 import Button from '@/app/components/base/button'
 import { login, oauth, fetchUserProfile } from '@/service/common'

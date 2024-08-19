@@ -3,18 +3,18 @@
 import type { ChangeEvent, FC } from 'react'
 import React, { useState } from 'react'
 import data from '@emoji-mart/data'
-import type { Emoji, EmojiMartData } from '@emoji-mart/data'
-import { SearchIndex, init } from 'emoji-mart'
-import cn from 'classnames'
+import type { EmojiMartData } from '@emoji-mart/data'
+import { init } from 'emoji-mart'
 import {
   MagnifyingGlassIcon,
 } from '@heroicons/react/24/outline'
 import { useTranslation } from 'react-i18next'
 import s from './style.module.css'
+import cn from '@/utils/classnames'
 import Divider from '@/app/components/base/divider'
 import Button from '@/app/components/base/button'
-
 import Modal from '@/app/components/base/modal'
+import { searchEmoji } from '@/utils/emoji'
 
 declare global {
   namespace JSX {
@@ -29,15 +29,6 @@ declare global {
 }
 
 init({ data })
-
-async function search(value: string) {
-  const emojis: Emoji[] = await SearchIndex.search(value) || []
-
-  const results = emojis.map((emoji) => {
-    return emoji.skins[0].native
-  })
-  return results
-}
 
 const backgroundColors = [
   '#FFEAD5',
@@ -105,7 +96,7 @@ const EmojiPicker: FC<IEmojiPickerProps> = ({
             }
             else {
               setIsSearching(true)
-              const emojis = await search(e.target.value)
+              const emojis = await searchEmoji(e.target.value)
               setSearchedEmojis(emojis)
             }
           }}

@@ -17,9 +17,9 @@ import timezone from 'dayjs/plugin/timezone'
 import { createContext, useContext } from 'use-context-selector'
 import { useShallow } from 'zustand/react/shallow'
 import { useTranslation } from 'react-i18next'
-import cn from 'classnames'
 import s from './style.module.css'
 import VarPanel from './var-panel'
+import cn from '@/utils/classnames'
 import { randomString } from '@/utils'
 import type { FeedbackFunc, Feedbacktype, IChatItem, SubmitAnnotationFunc } from '@/app/components/base/chat/chat/type'
 import type { Annotation, ChatConversationFullDetailResponse, ChatConversationGeneralDetail, ChatConversationsResponse, ChatMessage, ChatMessagesRequest, CompletionConversationFullDetailResponse, CompletionConversationGeneralDetail, CompletionConversationsResponse, LogAnnotation } from '@/models/log'
@@ -126,6 +126,7 @@ const getFormattedChatList = (messages: ChatMessage[], conversationId: string, t
         tokens: item.answer_tokens + item.message_tokens,
         latency: item.provider_response_latency.toFixed(2),
       },
+      citation: item.metadata?.retriever_resources,
       annotation: (() => {
         if (item.annotation_hit_history) {
           return {
@@ -495,7 +496,7 @@ function DetailPanel<T extends ChatConversationFullDetailResponse | CompletionCo
             >
               <Chat
                 config={{
-                  app_id: appDetail?.id,
+                  appId: appDetail?.id,
                   text_to_speech: {
                     enabled: true,
                   },

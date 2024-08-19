@@ -3,11 +3,11 @@ import type { FC } from 'react'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useContext } from 'use-context-selector'
-import cn from 'classnames'
 import { useSelectedLayoutSegments } from 'next/navigation'
 import Link from 'next/link'
 import Toast from '../../base/toast'
 import Item from './app-nav-item'
+import cn from '@/utils/classnames'
 import { fetchInstalledAppList as doFetchInstalledAppList, uninstallApp, updatePinStatus } from '@/service/explore'
 import ExploreContext from '@/context/explore-context'
 import Confirm from '@/app/components/base/confirm'
@@ -137,7 +137,6 @@ const SideBar: FC<IExploreSideBarProps> = ({
           title={t('explore.sidebar.delete.title')}
           content={t('explore.sidebar.delete.content')}
           isShow={showConfirm}
-          onClose={() => setShowConfirm(false)}
           onConfirm={handleDelete}
           onCancel={() => setShowConfirm(false)}
         />

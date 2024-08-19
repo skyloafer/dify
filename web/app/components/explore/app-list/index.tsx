@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation'
 import { useTranslation } from 'react-i18next'
 import { useContext } from 'use-context-selector'
 import { RiApps2Line } from '@remixicon/react'
+import useSWR from 'swr'
+import { useDebounceFn } from 'ahooks'
 import Toast from '../../base/toast'
 import s from './style.module.css'
 import ExploreContext from '@/context/explore-context'
@@ -31,6 +33,7 @@ import { DotsGrid } from '@/app/components/base/icons/src/vender/line/general'
 import { Colors } from '@/app/components/base/icons/src/vender/line/others'
 import { Route } from '@/app/components/base/icons/src/vender/line/mapsAndTravel'
 import TabSliderNew from '@/app/components/base/tab-slider-new'
+import SearchInput from '@/app/components/base/search-input'
 
 type AppsProps = {
   pageType?: PageType
@@ -52,6 +55,19 @@ const Apps = ({
   const { hasEditPermission } = useContext(ExploreContext)
   const allCategoriesEn = t('explore.apps.allCategories', { lng: 'en' })
   const { installedApps, setInstalledApps } = useContext(ExploreContext)
+
+  const [keywords, setKeywords] = useState('')
+  const [searchKeywords, setSearchKeywords] = useState('')
+
+  const { run: handleSearch } = useDebounceFn(() => {
+    setSearchKeywords(keywords)
+  }, { wait: 500 })
+
+  const handleKeywordsChange = (value: string) => {
+    setKeywords(value)
+    handleSearch()
+  }
+
   const [currentType, setCurrentType] = useState<string>('')
   // const [currCategory, setCurrCategory] = useTabSearchParams({
   //   defaultTab: allCategoriesEn,
@@ -122,6 +138,17 @@ const Apps = ({
     console.log(activeTab);
     return installedApps.filter(item => item.tag===activeTab)
   }, [allCategoriesEn, allList])
+
+  const searchFilteredList = useMemo(() => {
+    if (!searchKeywords || !filteredList || filteredList.length === 0)
+      return filteredList
+
+    const lowerCaseSearchKeywords = searchKeywords.toLowerCase()
+
+    return filteredList.filter(item =>
+      item.app && item.app.name && item.app.name.toLowerCase().includes(lowerCaseSearchKeywords),
+    )
+  }, [searchKeywords, filteredList])
 
   const [currApp, setCurrApp] = React.useState<App | null>(null)
   const [isShowCreateModal, setIsShowCreateModal] = React.useState(false)

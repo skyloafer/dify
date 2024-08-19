@@ -1,4 +1,5 @@
 from typing import Any, Optional
+from urllib.parse import quote_plus
 
 from pydantic import Field, NonNegativeInt, PositiveInt, computed_field
 from pydantic_settings import BaseSettings
@@ -10,8 +11,10 @@ from configs.middleware.storage.azure_blob_storage_config import AzureBlobStorag
 from configs.middleware.storage.google_cloud_storage_config import GoogleCloudStorageConfig
 from configs.middleware.storage.oci_storage_config import OCIStorageConfig
 from configs.middleware.storage.tencent_cos_storage_config import TencentCloudCOSStorageConfig
+from configs.middleware.vdb.analyticdb_config import AnalyticdbConfig
 from configs.middleware.vdb.chroma_config import ChromaConfig
 from configs.middleware.vdb.milvus_config import MilvusConfig
+from configs.middleware.vdb.myscale_config import MyScaleConfig
 from configs.middleware.vdb.opensearch_config import OpenSearchConfig
 from configs.middleware.vdb.oracle_config import OracleConfig
 from configs.middleware.vdb.pgvector_config import PGVectorConfig
@@ -102,7 +105,7 @@ class DatabaseConfig:
         ).strip("&")
         db_extras = f"?{db_extras}" if db_extras else ""
         return (f"{self.SQLALCHEMY_DATABASE_URI_SCHEME}://"
-                f"{self.DB_USERNAME}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_DATABASE}"
+                f"{quote_plus(self.DB_USERNAME)}:{quote_plus(self.DB_PASSWORD)}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_DATABASE}" 
                 f"{db_extras}")
 
     SQLALCHEMY_POOL_SIZE: NonNegativeInt = Field(
@@ -183,8 +186,10 @@ class MiddlewareConfig(
 
     # configs of vdb and vdb providers
     VectorStoreConfig,
+    AnalyticdbConfig,
     ChromaConfig,
     MilvusConfig,
+    MyScaleConfig,
     OpenSearchConfig,
     OracleConfig,
     PGVectorConfig,

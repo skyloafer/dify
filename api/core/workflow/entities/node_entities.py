@@ -1,3 +1,4 @@
+from collections.abc import Mapping
 from enum import Enum
 from typing import Any, Optional
 
@@ -22,10 +23,12 @@ class NodeType(Enum):
     HTTP_REQUEST = 'http-request'
     TOOL = 'tool'
     VARIABLE_AGGREGATOR = 'variable-aggregator'
+    # TODO: merge this into VARIABLE_AGGREGATOR
     VARIABLE_ASSIGNER = 'variable-assigner'
     LOOP = 'loop'
     ITERATION = 'iteration'
     PARAMETER_EXTRACTOR = 'parameter-extractor'
+    CONVERSATION_VARIABLE_ASSIGNER = 'assigner'
 
     @classmethod
     def value_of(cls, value: str) -> 'NodeType':
@@ -82,9 +85,9 @@ class NodeRunResult(BaseModel):
     """
     status: WorkflowNodeExecutionStatus = WorkflowNodeExecutionStatus.RUNNING
 
-    inputs: Optional[dict] = None  # node inputs
+    inputs: Optional[Mapping[str, Any]] = None  # node inputs
     process_data: Optional[dict] = None  # process data
-    outputs: Optional[dict] = None  # node outputs
+    outputs: Optional[Mapping[str, Any]] = None  # node outputs
     metadata: Optional[dict[NodeRunMetadataKey, Any]] = None  # node metadata
 
     edge_source_handle: Optional[str] = None  # source handle id of node with multiple branches

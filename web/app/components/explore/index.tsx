@@ -35,6 +35,11 @@ const Explore: FC<IExploreProps> = ({
     })()
   }, [])
 
+  useEffect(() => {
+    if (isCurrentWorkspaceDatasetOperator)
+      return router.replace('/datasets')
+  }, [isCurrentWorkspaceDatasetOperator])
+
   return (
     <div className='bg-img flex h-full bg-gray-100 border-t border-gray-200 overflow-hidden'>
       <ExploreContext.Provider
