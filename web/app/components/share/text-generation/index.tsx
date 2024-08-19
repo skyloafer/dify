@@ -111,11 +111,19 @@ const TextGeneration: FC<IMainProps> = ({
   const handleSaveMessage = async (messageId: string) => {
     await saveMessage(messageId, isInstalledApp, installedAppInfo?.id)
     notify({ type: 'success', message: t('common.api.saved') })
+    // 若加载至iframe中，需向父容器传递信息
+    if (isIframe && !!window)
+      window.parent.postMessage(JSON.stringify({ messageId, postType: 'handleSaveMessage' }), '*')
+
     fetchSavedMessage()
   }
   const handleRemoveSavedMessage = async (messageId: string) => {
     await removeMessage(messageId, isInstalledApp, installedAppInfo?.id)
     notify({ type: 'success', message: t('common.api.remove') })
+    // 若加载至iframe中，需向父容器传递信息
+    if (isIframe && !!window)
+      window.parent.postMessage(JSON.stringify({ messageId, postType: 'handleRemoveSavedMessage' }), '*')
+
     fetchSavedMessage()
   }
 
