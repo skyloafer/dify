@@ -113,7 +113,7 @@ const TextGeneration: FC<IMainProps> = ({
     notify({ type: 'success', message: t('common.api.saved') })
     // 若加载至iframe中，需向父容器传递信息
     if (isIframe && !!window)
-      window.parent.postMessage(JSON.stringify({ messageId, postType: 'handleSaveMessage' }), '*')
+      window.parent.postMessage({ messageId, postType: 'handleSaveMessage' }, '*')
 
     fetchSavedMessage()
   }
@@ -122,7 +122,7 @@ const TextGeneration: FC<IMainProps> = ({
     notify({ type: 'success', message: t('common.api.remove') })
     // 若加载至iframe中，需向父容器传递信息
     if (isIframe && !!window)
-      window.parent.postMessage(JSON.stringify({ messageId, postType: 'handleRemoveSavedMessage' }), '*')
+      window.parent.postMessage({ messageId, postType: 'handleRemoveSavedMessage' }, '*')
 
     fetchSavedMessage()
   }
@@ -147,7 +147,7 @@ const TextGeneration: FC<IMainProps> = ({
     showResSidebar()
     // 若加载至iframe中，需向父容器传递信息
     if (isIframe && !!window)
-      window.parent.postMessage(JSON.stringify({ postType: 'handleSend' }), '*')
+      window.parent.postMessage({ postType: 'handleSend' }, '*')
   }
 
   const [controlRetry, setControlRetry] = useState(0)
@@ -304,7 +304,7 @@ const TextGeneration: FC<IMainProps> = ({
     }
     // 若加载至iframe中，需向父容器传递信息
     if (isIframe && !!window)
-      window.parent.postMessage(JSON.stringify({ postType: 'handleRunBatch' }), '*')
+      window.parent.postMessage({ postType: 'handleRunBatch' }, '*')
 
     const payloadData = data.filter(item => !item.every(i => i === '')).slice(1)
     const varLen = promptConfig?.prompt_variables.length || 0

@@ -249,7 +249,7 @@ export const useChatWithHistory = (installedAppInfo?: InstalledApp) => {
     handleConversationIdInfoChange(conversationId)
     // 若加载至iframe中，需向父容器传递信息
     if (isIframe && !!window)
-      window.parent.postMessage(JSON.stringify({ conversationId, postType: 'conversationChange' }), '*')
+      window.parent.postMessage({ conversationId, postType: 'conversationChange' }, '*')
 
     if (conversationId === '' && !checkInputsRequired(true))
       setShowConfigPanelBeforeChat(true)

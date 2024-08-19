@@ -73,7 +73,7 @@ const ChatWrapper = () => {
 
     // 若加载至iframe中，需向父容器传递信息
     if (isIframe && !!window)
-      window.parent.postMessage(JSON.stringify({ ...data, postType: 'doSend' }), '*')
+      window.parent.postMessage({ ...data, postType: 'doSend' }, '*')
 
     if (appConfig?.file_upload?.image.enabled && files?.length)
       data.files = files
