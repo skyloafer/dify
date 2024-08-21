@@ -1,6 +1,7 @@
 'use client'
 import type { FC } from 'react'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+
 import { useTranslation } from 'react-i18next'
 import {
   RiErrorWarningFill,
@@ -37,7 +38,7 @@ import Toast from '@/app/components/base/toast'
 import type { VisionFile, VisionSettings } from '@/types/app'
 import { Resolution, TransferMethod } from '@/types/app'
 import { useAppFavicon } from '@/hooks/use-app-favicon'
-import { useAiDeliveryContext } from '@/context/ai-delivery-context'
+import { getIsIframe } from '@/utils/aiDeliveryTools'
 
 const GROUP_SIZE = 5 // to avoid RPM(Request per minute) limit. The group task finished then the next group.
 enum TaskStatus {
@@ -71,7 +72,10 @@ const TextGeneration: FC<IMainProps> = ({
   const { notify } = Toast
 
   const { t } = useTranslation()
-  const { isIframe } = useAiDeliveryContext()
+  // 是否加载至iframe中
+  const isIframe = useMemo(() => {
+    return getIsIframe()
+  }, [])
   const media = useBreakpoints()
   const isPC = media === MediaType.pc
   const isTablet = media === MediaType.tablet
