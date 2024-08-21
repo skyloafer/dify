@@ -192,6 +192,7 @@ services:
   # API service
   api:
     image: skyloafer/dify-api:0.6.13-new
+    container_name: dify-api-1
     restart: always
     environment:
       # Use the shared environment variables.
@@ -212,6 +213,7 @@ services:
   # The Celery worker for processing the queue.
   worker:
     image: skyloafer/dify-api:0.6.13-new
+    container_name: dify-worker-1
     restart: always
     environment:
       # Use the shared environment variables.
@@ -231,6 +233,7 @@ services:
   # Frontend web application.
   web:
     image: skyloafer/dify-web:0.6.13-new
+    container_name: dify-web-1
     restart: always
     environment:
       CONSOLE_API_URL: ${CONSOLE_API_URL:-}
@@ -241,6 +244,7 @@ services:
   # The postgres database.
   db:
     image: postgres:15-alpine
+    container_name: dify-pgsql15-1
     restart: always
     environment:
       PGUSER: ${PGUSER:-postgres}
@@ -264,6 +268,7 @@ services:
   # The redis cache.
   redis:
     image: redis:6-alpine
+    container_name: dify-redis-1
     restart: always
     volumes:
       # Mount the redis data directory to the container.
@@ -276,6 +281,7 @@ services:
   # The DifySandbox
   sandbox:
     image: langgenius/dify-sandbox:0.2.1
+    container_name: dify-sandbox-1
     restart: always
     environment:
       # The DifySandbox configurations
@@ -298,6 +304,7 @@ services:
   # https://docs.dify.ai/learn-more/faq/self-host-faq#id-18.-why-is-ssrf_proxy-needed
   ssrf_proxy:
     image: ubuntu/squid:latest
+    container_name: dify-ssrf_proxy-1
     restart: always
     volumes:
       - ./ssrf_proxy/squid.conf.template:/etc/squid/squid.conf.template
@@ -338,6 +345,7 @@ services:
   # used for reverse proxying the API service and Web service.
   nginx:
     image: nginx:latest
+    container_name: dify-nginx-1
     restart: always
     volumes:
       - ./nginx/nginx.conf.template:/etc/nginx/nginx.conf.template
@@ -377,6 +385,7 @@ services:
   # The Weaviate vector store.
   weaviate:
     image: semitechnologies/weaviate:1.19.0
+    container_name: dify-weaviate-1
     profiles:
       - ''
       - weaviate
@@ -585,7 +594,7 @@ services:
       - opensearch
 
   waline:
-    container_name: waline
+    container_name: dify-waline-1
     image: lizheming/waline:latest
     restart: always
     ports:
