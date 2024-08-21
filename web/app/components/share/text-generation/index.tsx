@@ -37,6 +37,7 @@ import Toast from '@/app/components/base/toast'
 import type { VisionFile, VisionSettings } from '@/types/app'
 import { Resolution, TransferMethod } from '@/types/app'
 import { useAppFavicon } from '@/hooks/use-app-favicon'
+import { useAiDeliveryContext } from '@/context/ai-delivery-context'
 
 const GROUP_SIZE = 5 // to avoid RPM(Request per minute) limit. The group task finished then the next group.
 enum TaskStatus {
@@ -70,6 +71,7 @@ const TextGeneration: FC<IMainProps> = ({
   const { notify } = Toast
 
   const { t } = useTranslation()
+  const { isIframe } = useAiDeliveryContext()
   const media = useBreakpoints()
   const isPC = media === MediaType.pc
   const isTablet = media === MediaType.tablet
@@ -110,11 +112,19 @@ const TextGeneration: FC<IMainProps> = ({
   const handleSaveMessage = async (messageId: string) => {
     await saveMessage(messageId, isInstalledApp, installedAppInfo?.id)
     notify({ type: 'success', message: t('common.api.saved') })
+    // 若加载至iframe中，需向父容器传递信息
+    if (isIframe && !!window)
+      window.parent.postMessage({ messageId, postType: 'handleSaveMessage' }, '*')
+
     fetchSavedMessage()
   }
   const handleRemoveSavedMessage = async (messageId: string) => {
     await removeMessage(messageId, isInstalledApp, installedAppInfo?.id)
     notify({ type: 'success', message: t('common.api.remove') })
+    // 若加载至iframe中，需向父容器传递信息
+    if (isIframe && !!window)
+      window.parent.postMessage({ messageId, postType: 'handleRemoveSavedMessage' }, '*')
+
     fetchSavedMessage()
   }
 
@@ -136,6 +146,9 @@ const TextGeneration: FC<IMainProps> = ({
     setAllTaskList([]) // clear batch task running status
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
     showResSidebar()
+    // 若加载至iframe中，需向父容器传递信息
+    if (isIframe && !!window)
+      window.parent.postMessage({ postType: 'handleSend' }, '*')
   }
 
   const [controlRetry, setControlRetry] = useState(0)
@@ -290,6 +303,9 @@ const TextGeneration: FC<IMainProps> = ({
       notify({ type: 'info', message: t('appDebug.errorMessage.waitForBatchResponse') })
       return
     }
+    // 若加载至iframe中，需向父容器传递信息
+    if (isIframe && !!window)
+      window.parent.postMessage({ postType: 'handleRunBatch' }, '*')
 
     const payloadData = data.filter(item => !item.every(i => i === '')).slice(1)
     const varLen = promptConfig?.prompt_variables.length || 0

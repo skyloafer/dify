@@ -2,6 +2,7 @@ import React from 'react'
 import type { ReactNode } from 'react'
 import SwrInitor from '@/app/components/swr-initor'
 import { AppContextProvider } from '@/context/app-context'
+import { AiDeliveryProvider } from '@/context/ai-delivery-context'
 import GA, { GaType } from '@/app/components/base/ga'
 import HeaderWrapper from '@/app/components/header/header-wrapper'
 import Header from '@/app/components/header'
@@ -18,12 +19,14 @@ const Layout = ({ children }: { children: ReactNode }) => {
           <EventEmitterContextProvider>
             <ProviderContextProvider>
               <ModalContextProvider>
-                <HeaderWrapper>
-                  <div style={{ backgroundColor: '#FFF' }}>
-                  <Header />
-                  </div>
-                </HeaderWrapper>
-                {children}
+                <AiDeliveryProvider>
+                  <HeaderWrapper>
+                    <div style={{ backgroundColor: '#FFF' }}>
+                      <Header />
+                    </div>
+                  </HeaderWrapper>
+                  {children}
+                </AiDeliveryProvider>
               </ModalContextProvider>
             </ProviderContextProvider>
           </EventEmitterContextProvider>

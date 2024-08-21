@@ -36,11 +36,13 @@ import type {
 } from '@/models/share'
 import { addFileInfos, sortAgentSorts } from '@/app/components/tools/utils'
 import { useToastContext } from '@/app/components/base/toast'
+import { useAiDeliveryContext } from '@/context/ai-delivery-context'
 import { changeLanguage } from '@/i18n/i18next-config'
 import { useAppFavicon } from '@/hooks/use-app-favicon'
 
 export const useChatWithHistory = (installedAppInfo?: InstalledApp) => {
   const isInstalledApp = useMemo(() => !!installedAppInfo, [installedAppInfo])
+  const { isIframe } = useAiDeliveryContext()
   const { data: appInfo, isLoading: appInfoLoading, error: appInfoError } = useSWR(installedAppInfo ? null : 'appInfo', fetchAppInfo)
 
   useAppFavicon(!installedAppInfo, appInfo?.site.icon, appInfo?.site.icon_background)
@@ -248,12 +250,15 @@ export const useChatWithHistory = (installedAppInfo?: InstalledApp) => {
     currentChatInstanceRef.current.handleStop()
     setNewConversationId('')
     handleConversationIdInfoChange(conversationId)
+    // 若加载至iframe中，需向父容器传递信息
+    if (isIframe && !!window)
+      window.parent.postMessage({ conversationId, postType: 'conversationChange' }, '*')
 
     if (conversationId === '' && !checkInputsRequired(true))
       setShowConfigPanelBeforeChat(true)
     else
       setShowConfigPanelBeforeChat(false)
-  }, [handleConversationIdInfoChange, setShowConfigPanelBeforeChat, checkInputsRequired])
+  }, [handleConversationIdInfoChange, setShowConfigPanelBeforeChat, checkInputsRequired, isIframe])
   const handleNewConversation = useCallback(() => {
     currentChatInstanceRef.current.handleStop()
     setNewConversationId('')
