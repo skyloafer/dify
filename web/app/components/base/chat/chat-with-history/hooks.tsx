@@ -251,8 +251,14 @@ export const useChatWithHistory = (installedAppInfo?: InstalledApp) => {
     setNewConversationId('')
     handleConversationIdInfoChange(conversationId)
     // 若加载至iframe中，需向父容器传递信息
-    if (isIframe && !!window)
-      window.parent.postMessage({ conversationId, postType: 'conversationChange' }, '*')
+    if (isIframe && !!window) {
+      window.parent.postMessage({
+        conversationId,
+        postType: 'conversationChange',
+        conversationIdInfo: localStorage?.getItem('conversationIdInfo'),
+        token: localStorage?.getItem('token'),
+      }, '*')
+    }
 
     if (conversationId === '' && !checkInputsRequired(true))
       setShowConfigPanelBeforeChat(true)

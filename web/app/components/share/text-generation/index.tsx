@@ -117,8 +117,14 @@ const TextGeneration: FC<IMainProps> = ({
     await saveMessage(messageId, isInstalledApp, installedAppInfo?.id)
     notify({ type: 'success', message: t('common.api.saved') })
     // 若加载至iframe中，需向父容器传递信息
-    if (isIframe && !!window)
-      window.parent.postMessage({ messageId, postType: 'handleSaveMessage' }, '*')
+    if (isIframe && !!window) {
+      window.parent.postMessage({
+        messageId,
+        postType: 'handleSaveMessage',
+        conversationIdInfo: localStorage?.getItem('conversationIdInfo'),
+        token: localStorage?.getItem('token'),
+      }, '*')
+    }
 
     fetchSavedMessage()
   }
@@ -126,8 +132,14 @@ const TextGeneration: FC<IMainProps> = ({
     await removeMessage(messageId, isInstalledApp, installedAppInfo?.id)
     notify({ type: 'success', message: t('common.api.remove') })
     // 若加载至iframe中，需向父容器传递信息
-    if (isIframe && !!window)
-      window.parent.postMessage({ messageId, postType: 'handleRemoveSavedMessage' }, '*')
+    if (isIframe && !!window) {
+      window.parent.postMessage({
+        messageId,
+        postType: 'handleRemoveSavedMessage',
+        conversationIdInfo: localStorage?.getItem('conversationIdInfo'),
+        token: localStorage?.getItem('token'),
+      }, '*')
+    }
 
     fetchSavedMessage()
   }
@@ -151,8 +163,13 @@ const TextGeneration: FC<IMainProps> = ({
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
     showResSidebar()
     // 若加载至iframe中，需向父容器传递信息
-    if (isIframe && !!window)
-      window.parent.postMessage({ postType: 'handleSend' }, '*')
+    if (isIframe && !!window) {
+      window.parent.postMessage({
+        postType: 'handleSend',
+        conversationIdInfo: localStorage?.getItem('conversationIdInfo'),
+        token: localStorage?.getItem('token'),
+      }, '*')
+    }
   }
 
   const [controlRetry, setControlRetry] = useState(0)
@@ -308,8 +325,13 @@ const TextGeneration: FC<IMainProps> = ({
       return
     }
     // 若加载至iframe中，需向父容器传递信息
-    if (isIframe && !!window)
-      window.parent.postMessage({ postType: 'handleRunBatch' }, '*')
+    if (isIframe && !!window) {
+      window.parent.postMessage({
+        postType: 'handleRunBatch',
+        conversationIdInfo: localStorage?.getItem('conversationIdInfo'),
+        token: localStorage?.getItem('token'),
+      }, '*')
+    }
 
     const payloadData = data.filter(item => !item.every(i => i === '')).slice(1)
     const varLen = promptConfig?.prompt_variables.length || 0
