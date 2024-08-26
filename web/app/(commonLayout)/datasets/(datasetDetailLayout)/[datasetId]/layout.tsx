@@ -16,6 +16,10 @@ import {
   QuestionMarkCircleIcon,
 } from '@heroicons/react/24/outline'
 import {
+  RiBook2Fill,
+  RiBook2Line,
+} from '@remixicon/react'
+import {
   Cog8ToothIcon as Cog8ToothSolidIcon,
   // CommandLineIcon as CommandLineSolidIcon,
   DocumentTextIcon as DocumentTextSolidIcon,
@@ -39,6 +43,7 @@ import { AiText, ChatBot, CuteRobote } from '@/app/components/base/icons/src/ven
 import { Route } from '@/app/components/base/icons/src/vender/solid/mapsAndTravel'
 import { getLocaleOnClient } from '@/i18n'
 import { useAppContext } from '@/context/app-context'
+import { useAiDeliveryContext } from '@/context/ai-delivery-context'
 
 export type IAppDetailLayoutProps = {
   children: React.ReactNode
@@ -189,6 +194,7 @@ const DatasetDetailLayout: FC<IAppDetailLayoutProps> = (props) => {
   const hideSideBar = /documents\/create$/.test(pathname)
   const { t } = useTranslation()
   const { isCurrentWorkspaceDatasetOperator } = useAppContext()
+  const { isIframe } = useAiDeliveryContext()
 
   const media = useBreakpoints()
   const isMobile = media === MediaType.mobile
@@ -208,6 +214,8 @@ const DatasetDetailLayout: FC<IAppDetailLayoutProps> = (props) => {
     { name: t('common.datasetMenus.hitTesting'), href: `/datasets/${datasetId}/hitTesting`, icon: TargetIcon, selectedIcon: TargetSolidIcon },
     // { name: 'api & webhook', href: `/datasets/${datasetId}/api`, icon: CommandLineIcon, selectedIcon: CommandLineSolidIcon },
     { name: t('common.datasetMenus.settings'), href: `/datasets/${datasetId}/settings`, icon: Cog8ToothIcon, selectedIcon: Cog8ToothSolidIcon },
+    // 如果加载至Iframe中，则需要返回知识库的菜单
+    ...(isIframe ? [{ name: '返回知识库', href: '/datasets', icon: RiBook2Line, selectedIcon: RiBook2Fill }] : []),
   ]
 
   useEffect(() => {

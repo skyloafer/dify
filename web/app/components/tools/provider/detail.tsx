@@ -35,6 +35,7 @@ import { useProviderContext } from '@/context/provider-context'
 import { ConfigurationMethodEnum } from '@/app/components/header/account-setting/model-provider-page/declarations'
 import Loading from '@/app/components/base/loading'
 import { useAppContext } from '@/context/app-context'
+import { useAiDeliveryContext } from '@/context/ai-delivery-context'
 
 type Props = {
   collection: Collection
@@ -54,6 +55,7 @@ const ProviderDetail = ({
   const isBuiltIn = collection.type === CollectionType.builtIn
   const isModel = collection.type === CollectionType.model
   const { isCurrentWorkspaceManager } = useAppContext()
+  const { isIframe } = useAiDeliveryContext()
 
   const [isDetailLoading, setIsDetailLoading] = useState(false)
 
@@ -212,6 +214,27 @@ const ProviderDetail = ({
     getProviderToolList()
   }, [collection.name, collection.type, getCustomProvider, getProviderToolList, getWorkflowToolProvider])
 
+  // 在工作室中打开事件
+  const handleOpenInApps = useCallback(() => {
+    // 地址
+    const targetUrl = `/app/${(customCollection as WorkflowToolProviderResponse).workflow_app_id}/workflow`
+    if (isIframe) {
+      window.parent.postMessage({
+        targetUrl,
+        location: {
+          href: window.location.href,
+          host: window.location.host,
+          origin: window.location.origin,
+          pathname: window.location.pathname,
+        },
+        postType: 'openToolsInApps',
+      }, '*')
+    }
+    else {
+      window.open(targetUrl)
+    }
+  }, [customCollection, isIframe])
+
   return (
     <div className='px-6 py-3'>
       <div className='flex items-center py-1 gap-2'>
@@ -266,7 +289,7 @@ const ProviderDetail = ({
               variant='primary'
               className={cn('shrink-0 my-3 w-[183px]')}
             >
-              <a className='flex items-center text-white' href={`/app/${(customCollection as WorkflowToolProviderResponse).workflow_app_id}/workflow`} rel='noreferrer' target='_blank'>
+              <a className='flex items-center text-white' onClick={handleOpenInApps}>
                 <div className='leading-5 text-sm font-medium'>{t('tools.openInStudio')}</div>
                 <LinkExternal02 className='ml-1 w-4 h-4' />
               </a>

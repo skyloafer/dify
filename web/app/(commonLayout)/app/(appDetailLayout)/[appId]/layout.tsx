@@ -8,6 +8,8 @@ import {
   RiDashboard2Line,
   RiFileList3Fill,
   RiFileList3Line,
+  RiRobot2Fill,
+  RiRobot2Line,
   RiTerminalBoxFill,
   RiTerminalBoxLine,
   RiTerminalWindowFill,
@@ -24,6 +26,7 @@ import { fetchAppDetail } from '@/service/apps'
 import { useAppContext } from '@/context/app-context'
 import Loading from '@/app/components/base/loading'
 import useBreakpoints, { MediaType } from '@/hooks/use-breakpoints'
+import { useAiDeliveryContext } from '@/context/ai-delivery-context'
 
 export type IAppDetailLayoutProps = {
   children: React.ReactNode
@@ -41,6 +44,7 @@ const AppDetailLayout: FC<IAppDetailLayoutProps> = (props) => {
   const media = useBreakpoints()
   const isMobile = media === MediaType.mobile
   const { isCurrentWorkspaceEditor } = useAppContext()
+  const { isIframe } = useAiDeliveryContext()
   const { appDetail, setAppDetail, setAppSiderbarExpand } = useStore(useShallow(state => ({
     appDetail: state.appDetail,
     setAppDetail: state.setAppDetail,
@@ -88,8 +92,17 @@ const AppDetailLayout: FC<IAppDetailLayoutProps> = (props) => {
         selectedIcon: RiDashboard2Fill,
       },
     ]
+    // 如果加载至Iframe中，则需要返回至工作室的菜单
+    if (isIframe) {
+      navs.push({
+        name: '返回工作室',
+        href: '/apps',
+        icon: RiRobot2Line,
+        selectedIcon: RiRobot2Fill,
+      })
+    }
     return navs
-  }, [t])
+  }, [t, isIframe])
 
   useEffect(() => {
     if (appDetail) {
