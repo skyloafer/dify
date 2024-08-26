@@ -5,6 +5,7 @@ on:
     branches:
       - "main"
       - "0.6.13-new"
+      - "0.6.13-ai-delivery"
   release:
     types: [published]
 
