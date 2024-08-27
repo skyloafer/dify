@@ -17,6 +17,7 @@ import useAppsQueryState from './hooks/useAppsQueryState'
 import type { AppListResponse } from '@/models/app'
 import { fetchAppList } from '@/service/apps'
 import { useAppContext } from '@/context/app-context'
+import { useAiDeliveryContext } from '@/context/ai-delivery-context'
 import { NEED_REFRESH_APP_LIST_KEY } from '@/config'
 import { CheckModal } from '@/hooks/use-pay'
 import TabSliderNew from '@/app/components/base/tab-slider-new'
@@ -52,7 +53,8 @@ const getKey = (
 const Apps = () => {
   const { t } = useTranslation()
   const router = useRouter()
-  const { isCurrentWorkspaceEditor, isCurrentWorkspaceDatasetOperator } = useAppContext()
+  const { isIframe } = useAiDeliveryContext()
+  const { currentWorkspace, isCurrentWorkspaceEditor, isCurrentWorkspaceDatasetOperator } = useAppContext()
   const showTagManagementModal = useTagStore(s => s.showTagManagementModal)
   const [activeTab, setActiveTab] = useTabSearchParams({
     defaultTab: 'all',
@@ -82,7 +84,20 @@ const Apps = () => {
   ]
 
   useEffect(() => {
-    if (!isCurrentWorkspaceEditor)
+    if (isIframe && currentWorkspace.id && !['owner', 'admin', 'editor'].includes(currentWorkspace.role)) {
+      window.parent.postMessage({
+        targetUrl: '/explore/apps',
+        postType: 'redirectExplore',
+      }, '*')
+      router.replace('/explore/apps')
+    }
+  }, [currentWorkspace, isIframe])
+
+  useEffect(() => {
+    // 原代码
+    // if (!isCurrentWorkspaceEditor)
+    //   router.replace('/explore/apps')
+    if (!isIframe && !isCurrentWorkspaceEditor)
       router.replace('/explore/apps')
 
     document.title = `${t('common.menus.apps')} -  Dify`

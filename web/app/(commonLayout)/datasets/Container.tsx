@@ -24,11 +24,13 @@ import { fetchDatasetApiBaseUrl } from '@/service/datasets'
 import { useTabSearchParams } from '@/hooks/use-tab-searchparams'
 import { useStore as useTagStore } from '@/app/components/base/tag-management/store'
 import { useAppContext } from '@/context/app-context'
+import { useAiDeliveryContext } from '@/context/ai-delivery-context'
 
 const Container = () => {
   const { t } = useTranslation()
   const router = useRouter()
   const { currentWorkspace } = useAppContext()
+  const { isIframe } = useAiDeliveryContext()
   const showTagManagementModal = useTagStore(s => s.showTagManagementModal)
 
   const options = useMemo(() => {
@@ -64,7 +66,20 @@ const Container = () => {
   }
 
   useEffect(() => {
-    if (currentWorkspace.role === 'normal')
+    if (isIframe && currentWorkspace.id && currentWorkspace.role === 'normal') {
+      window.parent.postMessage({
+        targetUrl: '/apps',
+        postType: 'redirectApps',
+      }, '*')
+      return router.replace('/apps')
+    }
+  }, [currentWorkspace])
+
+  useEffect(() => {
+    // 原代码
+    // if (currentWorkspace.role === 'normal')
+    //   return router.replace('/apps')
+    if (!isIframe && currentWorkspace.role === 'normal')
       return router.replace('/apps')
   }, [currentWorkspace])
 
