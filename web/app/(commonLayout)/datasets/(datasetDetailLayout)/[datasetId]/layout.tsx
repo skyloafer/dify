@@ -1,7 +1,8 @@
 'use client'
 import type { FC, SVGProps } from 'react'
-import React, { useEffect } from 'react'
-import { usePathname } from 'next/navigation'
+import React, { useCallback, useEffect } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
+import type { NextRouter } from 'next/router'
 import useSWR from 'swr'
 import { useTranslation } from 'react-i18next'
 import { useBoolean } from 'ahooks'
@@ -24,7 +25,6 @@ import {
   // CommandLineIcon as CommandLineSolidIcon,
   DocumentTextIcon as DocumentTextSolidIcon,
 } from '@heroicons/react/24/solid'
-import Link from 'next/link'
 import s from './style.module.css'
 import classNames from '@/utils/classnames'
 import { fetchDatasetDetail, fetchDatasetRelatedApps } from '@/service/datasets'
@@ -55,15 +55,39 @@ type ILikedItemProps = {
   appStatus?: boolean
   detail: RelatedApp
   isMobile: boolean
+  isIframe: boolean
+  router: NextRouter
 }
 
 const LikedItem = ({
   type = 'app',
   detail,
   isMobile,
+  isIframe,
+  router,
 }: ILikedItemProps) => {
+  // 处理点击事件
+  const handleLinkClick = useCallback((url: string) => {
+    // 若未加载至iframe中，则跳转至目标地址
+    if (isIframe) {
+      window.parent.postMessage({
+        targetUrl: url,
+        location: {
+          href: window.location.href,
+          host: window.location.host,
+          origin: window.location.origin,
+          pathname: window.location.pathname,
+        },
+        postType: 'openKnowledgeInApp',
+      }, '*')
+    }
+    else {
+      router.push(url)
+    }
+  }, [isIframe])
   return (
-    <Link className={classNames(s.itemWrapper, 'px-2', isMobile && 'justify-center')} href={`/app/${detail?.id}/overview`}>
+    <div className={classNames(s.itemWrapper, 'px-2', isMobile && 'justify-center')}
+      onClick={() => handleLinkClick(`/app/${detail?.id}/overview`)}>
       <div className={classNames(s.iconWrapper, 'mr-0')}>
         <AppIcon size='tiny' iconType={detail.icon_type} icon={detail.icon} background={detail.icon_background} imageUrl={detail.icon_url} />
         {type === 'app' && (
@@ -87,7 +111,7 @@ const LikedItem = ({
         )}
       </div>
       {!isMobile && <div className={classNames(s.appInfo, 'ml-2')}>{detail?.name || '--'}</div>}
-    </Link>
+    </div>
   )
 }
 
@@ -122,9 +146,11 @@ const BookOpenIcon = ({ className }: SVGProps<SVGElement>) => {
 type IExtraInfoProps = {
   isMobile: boolean
   relatedApps?: RelatedAppResponse
+  isIframe?: boolean
+  router: NextRouter
 }
 
-const ExtraInfo = ({ isMobile, relatedApps }: IExtraInfoProps) => {
+const ExtraInfo = ({ isMobile, relatedApps, isIframe, router }: IExtraInfoProps) => {
   const locale = getLocaleOnClient()
   const [isShowTips, { toggle: toggleTips, set: setShowTips }] = useBoolean(!isMobile)
   const { t } = useTranslation()
@@ -142,7 +168,7 @@ const ExtraInfo = ({ isMobile, relatedApps }: IExtraInfoProps) => {
           {relatedApps?.total || '--'}
           <PaperClipIcon className='h-4 w-4 text-gray-700' />
         </div>}
-        {relatedApps?.data?.map((item, index) => (<LikedItem key={index} isMobile={isMobile} detail={item} />))}
+        {relatedApps?.data?.map((item, index) => (<LikedItem key={index} isMobile={isMobile} detail={item} isIframe={isIframe as boolean} router={router} />))}
       </>
     )}
     {!relatedApps?.data?.length && (
@@ -190,6 +216,7 @@ const DatasetDetailLayout: FC<IAppDetailLayoutProps> = (props) => {
     children,
     params: { datasetId },
   } = props
+  const router = useRouter()
   const pathname = usePathname()
   const hideSideBar = /documents\/create$/.test(pathname)
   const { t } = useTranslation()
@@ -242,7 +269,12 @@ const DatasetDetailLayout: FC<IAppDetailLayoutProps> = (props) => {
         icon_background={datasetRes?.icon_background || '#F5F5F5'}
         desc={datasetRes?.description || '--'}
         navigation={navigation}
-        extraInfo={!isCurrentWorkspaceDatasetOperator ? mode => <ExtraInfo isMobile={mode === 'collapse'} relatedApps={relatedApps} /> : undefined}
+        extraInfo={!isCurrentWorkspaceDatasetOperator
+          ? mode => <ExtraInfo isMobile={mode === 'collapse'}
+            relatedApps={relatedApps}
+            router={router}
+            isIframe={isIframe as boolean}/>
+          : undefined}
         iconType={datasetRes?.data_source_type === DataSourceType.NOTION ? 'notion' : 'dataset'}
       />}
       <DatasetDetailContext.Provider value={{
