@@ -6,7 +6,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import dayjs from 'dayjs'
 import { RiArrowDownSLine } from '@remixicon/react'
-import { usePathname, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import type { ModelAndParameter } from '../configuration/debug/types'
 import SuggestedAction from './suggested-action'
 import PublishWithMultipleModel from './publish-with-multiple-model'
@@ -65,7 +65,6 @@ const AppPublisher = ({
   const [open, setOpen] = useState(false)
   const appDetail = useAppStore(state => state.appDetail)
   const router = useRouter()
-  const pathname = usePathname()
   const { isIframe } = useAiDeliveryContext()
   const { app_base_url: appBaseURL = '', access_token: accessToken = '' } = appDetail?.site ?? {}
   const appMode = (appDetail?.mode !== 'completion' && appDetail?.mode !== 'workflow') ? 'chat' : appDetail.mode
@@ -117,23 +116,12 @@ const AppPublisher = ({
     if (disabled)
       return
     // 加载至iframe中
-    if (isIframe) {
-      const targetUrl = pathname.replace('workflow', 'develop')
-      window.parent.postMessage({
-        targetUrl,
-        location: {
-          href: window.location.href,
-          host: window.location.host,
-          origin: window.location.origin,
-          pathname: window.location.pathname,
-        },
-        postType: 'openWorkflowInDevelop',
-      }, '*')
-    }
-    else {
+    if (isIframe)
       router.push(url)
-    }
-  }, [isIframe, pathname])
+
+    else
+      window.open(url)
+  }, [isIframe])
 
   return (
     <PortalToFollowElem
