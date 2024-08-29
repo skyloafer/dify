@@ -6,6 +6,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import dayjs from 'dayjs'
 import { RiArrowDownSLine } from '@remixicon/react'
+import { usePathname, useRouter } from 'next/navigation'
 import type { ModelAndParameter } from '../configuration/debug/types'
 import SuggestedAction from './suggested-action'
 import PublishWithMultipleModel from './publish-with-multiple-model'
@@ -24,6 +25,7 @@ import { LeftIndent02 } from '@/app/components/base/icons/src/vender/line/editor
 import { FileText } from '@/app/components/base/icons/src/vender/line/files'
 import WorkflowToolConfigureButton from '@/app/components/tools/workflow-tool/configure-button'
 import type { InputVar } from '@/app/components/workflow/types'
+import { useAiDeliveryContext } from '@/context/ai-delivery-context'
 
 export type AppPublisherProps = {
   disabled?: boolean
@@ -62,6 +64,9 @@ const AppPublisher = ({
   const [published, setPublished] = useState(false)
   const [open, setOpen] = useState(false)
   const appDetail = useAppStore(state => state.appDetail)
+  const router = useRouter()
+  const pathname = usePathname()
+  const { isIframe } = useAiDeliveryContext()
   const { app_base_url: appBaseURL = '', access_token: accessToken = '' } = appDetail?.site ?? {}
   const appMode = (appDetail?.mode !== 'completion' && appDetail?.mode !== 'workflow') ? 'chat' : appDetail.mode
   const appURL = `${appBaseURL}/${appMode}/${accessToken}`
@@ -105,6 +110,30 @@ const AppPublisher = ({
   }, [disabled, onToggle, open])
 
   const [embeddingModalOpen, setEmbeddingModalOpen] = useState(false)
+
+  // 访问API事件
+  const handleAccessAPIReference = useCallback((disabled: boolean, url: string) => {
+    // 禁用状态则不执行后续
+    if (disabled)
+      return
+    // 加载至iframe中
+    if (isIframe) {
+      const targetUrl = pathname.replace('workflow', 'develop')
+      window.parent.postMessage({
+        targetUrl,
+        location: {
+          href: window.location.href,
+          host: window.location.host,
+          origin: window.location.origin,
+          pathname: window.location.pathname,
+        },
+        postType: 'openWorkflowInDevelop',
+      }, '*')
+    }
+    else {
+      router.push(url)
+    }
+  }, [isIframe, pathname])
 
   return (
     <PortalToFollowElem
@@ -204,7 +233,8 @@ const AppPublisher = ({
                   {t('workflow.common.embedIntoSite')}
                 </SuggestedAction>
               )}
-            <SuggestedAction disabled={!publishedAt} link='./develop' icon={<FileText className='w-4 h-4' />}>{t('workflow.common.accessAPIReference')}</SuggestedAction>
+            <SuggestedAction disabled={!publishedAt}
+              onClick={() => handleAccessAPIReference(!publishedAt, './develop')} icon={<FileText className='w-4 h-4' />}>{t('workflow.common.accessAPIReference')}</SuggestedAction>
             {appDetail?.mode === 'workflow' && (
               <WorkflowToolConfigureButton
                 disabled={!publishedAt}
