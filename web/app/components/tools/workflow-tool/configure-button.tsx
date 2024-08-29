@@ -14,6 +14,7 @@ import { createWorkflowToolProvider, fetchWorkflowToolDetailByAppID, saveWorkflo
 import type { Emoji, WorkflowToolProviderParameter, WorkflowToolProviderRequest, WorkflowToolProviderResponse } from '@/app/components/tools/types'
 import type { InputVar } from '@/app/components/workflow/types'
 import { useAppContext } from '@/context/app-context'
+import { useAiDeliveryContext } from '@/context/ai-delivery-context'
 
 type Props = {
   disabled: boolean
@@ -46,6 +47,7 @@ const WorkflowToolConfigureButton = ({
   const [isLoading, setIsLoading] = useState(false)
   const [detail, setDetail] = useState<WorkflowToolProviderResponse>()
   const { isCurrentWorkspaceManager } = useAppContext()
+  const { isIframe } = useAiDeliveryContext()
 
   const outdated = useMemo(() => {
     if (!detail)
@@ -168,6 +170,25 @@ const WorkflowToolConfigureButton = ({
     }
   }
 
+  // 访问工具页
+  const handleTurnToTool = useCallback((url: string) => {
+    if (isIframe) {
+      window.parent.postMessage({
+        targetUrl: url,
+        location: {
+          href: window.location.href,
+          host: window.location.host,
+          origin: window.location.origin,
+          pathname: window.location.pathname,
+        },
+        postType: 'openToolsInApps',
+      }, '*')
+    }
+    else {
+      router.push(url)
+    }
+  }, [isIframe])
+
   return (
     <>
       <div className='mt-2 pt-2 border-t-[0.5px] border-t-black/5'>
@@ -212,7 +233,7 @@ const WorkflowToolConfigureButton = ({
                   <Button
                     size='small'
                     className='w-[140px]'
-                    onClick={() => router.push('/tools?category=workflow')}
+                    onClick={() => handleTurnToTool('/tools?category=workflow')}
                   >
                     {t('workflow.common.manageInTools')}
                     <ArrowUpRight className='ml-1' />
