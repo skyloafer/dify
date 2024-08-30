@@ -261,8 +261,6 @@ services:
                -c 'effective_cache_size=${POSTGRES_EFFECTIVE_CACHE_SIZE:-4096MB}'
     volumes:
       - ./volumes/db/data:/var/lib/postgresql/data
-    ports:
-      - "${EXPOSE_POSTGRES_PORT:-6432}:5432"
     healthcheck:
       test: [ "CMD", "pg_isready" ]
       interval: 1s
@@ -361,6 +359,7 @@ services:
       - ./volumes/certbot/conf/live:/etc/letsencrypt/live # cert dir (with certbot container)
       - ./volumes/certbot/conf:/etc/letsencrypt
       - ./volumes/certbot/www:/var/www/html
+      - ./volumes/forward:/var/forward
     entrypoint: [ "sh", "-c", "cp /docker-entrypoint-mount.sh /docker-entrypoint.sh && sed -i 's/\r$$//' /docker-entrypoint.sh && chmod +x /docker-entrypoint.sh && /docker-entrypoint.sh" ]
     environment:
       NGINX_SERVER_NAME: ${NGINX_SERVER_NAME:-_}
@@ -610,8 +609,8 @@ services:
       SQLITE_PATH: '/app/data'
       JWT_TOKEN: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjpbeyJ3YWxpbmUiOiJodHRwczovL3dhbGluZS53c3Muc28ifV0sImlhdCI6MTcyMDYwMDg1NCwiZXhwIjoxNzUyMDc2Nzk5LCJhdWQiOiIiLCJpc3MiOiJ0YWxrd2ViIiwic3ViIjoiIn0._2q-OU_awXcSDxDFotz28bgm2KsHY4Vd3m07k6BZC5M'
       SITE_NAME: 'waline'
-      SITE_URL: 'https://wss.so/waline'
-      SECURE_DOMAINS: 'wss.so'
+      SITE_URL: 'https://dify.wss.so/waline'
+      SECURE_DOMAINS: 'dify.wss.so'
       AUTHOR_EMAIL: 'harrisonwang.dev@gmail.com'
       #PUBLIC_PATH: '/waline'
     networks:
@@ -696,6 +695,28 @@ services:
     restart: always
     volumes:
       - ./volumes/unstructured:/app/data
+
+  aidelivery-app:
+    image: iceicefrog/aidelivery-app:1.0
+    container_name: aidelivery-app
+    depends_on:
+      - db
+      - redis
+    restart: always
+    environment:
+      # Use the shared environment variables.
+      <<: *shared-api-worker-env
+    networks:
+      - ssrf_proxy_network
+      - default
+
+  aidelivery-ui:
+    image: iceicefrog/aidelivery-ui:1.0
+    container_name: aidelivery-ui
+    restart: always
+    networks:
+      - ssrf_proxy_network
+      - default
 
 networks:
   # create a network between sandbox, api and ssrf_proxy, and can not access outside.
