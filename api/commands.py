@@ -411,7 +411,8 @@ def migrate_knowledge_vector_database():
                     try:
                         click.echo(
                             click.style(
-                                f"Start to created vector index with {len(documents)} documents of {segments_count} segments for dataset {dataset.id}.",
+                                f"Start to created vector index with {len(documents)} documents of {segments_count}"
+                                f" segments for dataset {dataset.id}.",
                                 fg="green",
                             )
                         )
@@ -559,8 +560,9 @@ def add_qdrant_doc_id_index(field: str):
 
 @click.command("create-tenant", help="Create account and tenant.")
 @click.option("--email", prompt=True, help="The email address of the tenant account.")
+@click.option("--name", prompt=True, help="The workspace name of the tenant account.")
 @click.option("--language", prompt=True, help="Account language, default: en-US.")
-def create_tenant(email: str, language: Optional[str] = None):
+def create_tenant(email: str, language: Optional[str] = None, name: Optional[str] = None):
     """
     Create tenant account
     """
@@ -580,13 +582,15 @@ def create_tenant(email: str, language: Optional[str] = None):
     if language not in languages:
         language = "en-US"
 
+    name = name.strip()
+
     # generate random password
     new_password = secrets.token_urlsafe(16)
 
     # register account
     account = RegisterService.register(email=email, name=account_name, password=new_password, language=language)
 
-    TenantService.create_owner_tenant_if_not_exist(account)
+    TenantService.create_owner_tenant_if_not_exist(account, name)
 
     click.echo(
         click.style(

@@ -26,6 +26,7 @@ import { FileText } from '@/app/components/base/icons/src/vender/line/files'
 import WorkflowToolConfigureButton from '@/app/components/tools/workflow-tool/configure-button'
 import type { InputVar } from '@/app/components/workflow/types'
 import { useAiDeliveryContext } from '@/context/ai-delivery-context'
+import { appDefaultIconBackground } from '@/config'
 
 export type AppPublisherProps = {
   disabled?: boolean
@@ -230,8 +231,8 @@ const AppPublisher = ({
                 detailNeedUpdate={!!toolPublished && published}
                 workflowAppId={appDetail?.id}
                 icon={{
-                  content: appDetail?.icon,
-                  background: appDetail?.icon_background,
+                  content: (appDetail.icon_type === 'image' ? '🤖' : appDetail?.icon) || '🤖',
+                  background: (appDetail.icon_type === 'image' ? appDefaultIconBackground : appDetail?.icon_background) || appDefaultIconBackground,
                 }}
                 name={appDetail?.name}
                 description={appDetail?.description}
