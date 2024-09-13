@@ -23,8 +23,8 @@ else {
   // const domainParts = globalThis.location?.host?.split('.');
   // in production env, the host is dify.app . In other env, the host is [dev].dify.app
   // const env = domainParts.length === 2 ? 'ai' : domainParts?.[0];
-  apiPrefix = 'https://wss.so/console/api'
-  publicApiPrefix = 'https://wss.so/api' 
+  apiPrefix = 'https://dify.wss.so/console/api'
+  publicApiPrefix = 'https://dify.wss.so/api' 
 }
 
 export const API_PREFIX: string = apiPrefix
