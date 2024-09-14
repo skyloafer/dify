@@ -620,27 +620,7 @@ services:
       - opensearch-net
     depends_on:
       - opensearch
-
-  waline:
-    container_name: dify-waline-1
-    image: lizheming/waline:latest
-    restart: always
-    ports:
-      - "8360:8360"
-    volumes:
-      - ./volumes/waline/data:/app/data
-    environment:
-      TZ: 'Asia/Shanghai'
-      SQLITE_PATH: '/app/data'
-      JWT_TOKEN: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjpbeyJ3YWxpbmUiOiJodHRwczovL3dhbGluZS53c3Muc28ifV0sImlhdCI6MTcyMDYwMDg1NCwiZXhwIjoxNzUyMDc2Nzk5LCJhdWQiOiIiLCJpc3MiOiJ0YWxrd2ViIiwic3ViIjoiIn0._2q-OU_awXcSDxDFotz28bgm2KsHY4Vd3m07k6BZC5M'
-      SITE_NAME: 'waline'
-      SITE_URL: 'https://dify.wss.so/waline'
-      SECURE_DOMAINS: 'dify.wss.so'
-      AUTHOR_EMAIL: 'harrisonwang.dev@gmail.com'
-      #PUBLIC_PATH: '/waline'
-    networks:
-      - ssrf_proxy_network
-      - default
+  
   # MyScale vector database
   myscale:
     container_name: myscale
