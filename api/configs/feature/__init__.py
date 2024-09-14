@@ -350,7 +350,6 @@ class WorkflowConfig(BaseSettings):
         default=5,
     )
 
-    // default 5 change to 100 by zhoulang
     MAX_VARIABLE_SIZE: PositiveInt = Field(
         description="The maximum size in bytes of a variable. default to 5KB.",
         default=100 * 1024,
