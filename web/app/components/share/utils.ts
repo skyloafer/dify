@@ -16,6 +16,16 @@ export const checkOrSetAccessToken = async () => {
     accessTokenJson[sharedToken] = res.access_token
     localStorage.setItem('token', JSON.stringify(accessTokenJson))
   }
+  // 若加载至iframe中，需向父容器传递信息
+  if(window?.top !== window){
+    window?.parent?.postMessage({
+    conversationIdInfo: localStorage?.getItem('conversationIdInfo') || '',
+    token: localStorage?.getItem('token') || '',
+    checkToken: accessTokenJson[sharedToken] || '',
+    checkCode: sharedToken,
+    postType: 'sendCheckToken',
+    }, '*')
+  }
 }
 
 export const setAccessToken = async (sharedToken: string, token: string) => {
