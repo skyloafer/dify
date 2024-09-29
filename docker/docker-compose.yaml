@@ -383,6 +383,8 @@ services:
       - ./volumes/certbot/conf:/etc/letsencrypt
       - ./volumes/certbot/www:/var/www/html
       - ./volumes/forward:/var/forward
+      - ./volumes/fileStore:/var/fileStore
+      - ./volumes/designWeb/:/var/designWeb
     entrypoint: [ "sh", "-c", "cp /docker-entrypoint-mount.sh /docker-entrypoint.sh && sed -i 's/\r$$//' /docker-entrypoint.sh && chmod +x /docker-entrypoint.sh && /docker-entrypoint.sh" ]
     environment:
       NGINX_SERVER_NAME: ${NGINX_SERVER_NAME:-_}
@@ -703,7 +705,7 @@ services:
       - ./volumes/unstructured:/app/data
 
   aidelivery-app:
-    image: iceicefrog/aidelivery-app:1.0
+    image: iceicefrog/aidelivery-app:v2
     container_name: aidelivery-app
     depends_on:
       - db
@@ -717,8 +719,16 @@ services:
       - default
 
   aidelivery-ui:
-    image: iceicefrog/aidelivery-ui:1.0
+    image: iceicefrog/aidelivery-ui:v2
     container_name: aidelivery-ui
+    restart: always
+    networks:
+      - ssrf_proxy_network
+      - default
+
+  db-design-app:
+    image: de-design-copilot:202409141535
+    container_name: db-design-app
     restart: always
     networks:
       - ssrf_proxy_network
