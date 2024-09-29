@@ -717,6 +717,8 @@ services:
     networks:
       - ssrf_proxy_network
       - default
+    volumes:
+      - ./volumes/fileStore:/var/fileStore  
 
   aidelivery-ui:
     image: iceicefrog/aidelivery-ui:v2
