@@ -5,7 +5,7 @@ on:
     branches:
       - "main"
       - "0.7.1-tw"
-      - "0.8.2-tw"
+      - "0.8.3-tw"
   release:
     types: [published]
 

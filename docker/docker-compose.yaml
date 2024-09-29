@@ -213,7 +213,7 @@ x-shared-env: &shared-api-worker-env
 services:
   # API service
   api:
-    image: skyloafer/dify-api:0.8.2-tw
+    image: skyloafer/dify-api:0.8.3-tw
     container_name: dify-api-1
     restart: always
     environment:
@@ -234,7 +234,7 @@ services:
   # worker service
   # The Celery worker for processing the queue.
   worker:
-    image: skyloafer/dify-api:0.8.2-tw
+    image: skyloafer/dify-api:0.8.3-tw
     container_name: dify-worker-1
     restart: always
     environment:
@@ -254,7 +254,7 @@ services:
 
   # Frontend web application.
   web:
-    image: skyloafer/dify-web:0.8.2-tw
+    image: skyloafer/dify-web:0.8.3-tw
     container_name: dify-web-1
     restart: always
     environment:
