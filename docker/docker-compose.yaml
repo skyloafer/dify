@@ -207,13 +207,18 @@ x-shared-env: &shared-api-worker-env
   CODE_MAX_STRING_ARRAY_LENGTH: ${CODE_MAX_STRING_ARRAY_LENGTH:-30}
   CODE_MAX_OBJECT_ARRAY_LENGTH: ${CODE_MAX_OBJECT_ARRAY_LENGTH:-30}
   CODE_MAX_NUMBER_ARRAY_LENGTH: ${CODE_MAX_NUMBER_ARRAY_LENGTH:-1000}
+  WORKFLOW_MAX_EXECUTION_STEPS: ${WORKFLOW_MAX_EXECUTION_STEPS:-500}
+  WORKFLOW_MAX_EXECUTION_TIME: ${WORKFLOW_MAX_EXECUTION_TIME:-1200}
+  WORKFLOW_CALL_MAX_DEPTH: ${WORKFLOW_MAX_EXECUTION_TIME:-5}
   SSRF_PROXY_HTTP_URL: ${SSRF_PROXY_HTTP_URL:-http://ssrf_proxy:3128}
   SSRF_PROXY_HTTPS_URL: ${SSRF_PROXY_HTTPS_URL:-http://ssrf_proxy:3128}
+  HTTP_REQUEST_NODE_MAX_BINARY_SIZE: ${HTTP_REQUEST_NODE_MAX_BINARY_SIZE:-10485760}
+  HTTP_REQUEST_NODE_MAX_TEXT_SIZE: ${HTTP_REQUEST_NODE_MAX_TEXT_SIZE:-1048576}
 
 services:
   # API service
   api:
-    image: skyloafer/dify-api:0.8.3-tw
+    image: skyloafer/dify-api:0.9.1-tw
     container_name: dify-api-1
     restart: always
     environment:
@@ -234,7 +239,7 @@ services:
   # worker service
   # The Celery worker for processing the queue.
   worker:
-    image: skyloafer/dify-api:0.8.3-tw
+    image: skyloafer/dify-api:0.9.1-tw
     container_name: dify-worker-1
     restart: always
     environment:
@@ -254,7 +259,7 @@ services:
 
   # Frontend web application.
   web:
-    image: skyloafer/dify-web:0.8.3-tw
+    image: skyloafer/dify-web:0.9.1-tw
     container_name: dify-web-1
     restart: always
     environment:
@@ -642,7 +647,7 @@ services:
   # https://www.elastic.co/guide/en/elasticsearch/reference/current/settings.html
   # https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html#docker-prod-prerequisites
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.14.3
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.1
     container_name: elasticsearch
     profiles:
       - elasticsearch
@@ -669,7 +674,7 @@ services:
   # https://www.elastic.co/guide/en/kibana/current/docker.html
   # https://www.elastic.co/guide/en/kibana/current/settings.html
   kibana:
-    image: docker.elastic.co/kibana/kibana:8.14.3
+    image: docker.elastic.co/kibana/kibana:8.15.1
     container_name: kibana
     profiles:
       - elasticsearch
@@ -718,7 +723,7 @@ services:
       - ssrf_proxy_network
       - default
     volumes:
-      - ./volumes/fileStore:/var/fileStore  
+      - ./volumes/fileStore:/var/fileStore
 
   aidelivery-ui:
     image: iceicefrog/aidelivery-ui:v2

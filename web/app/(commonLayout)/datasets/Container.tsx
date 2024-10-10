@@ -8,6 +8,7 @@ import { useDebounceFn } from 'ahooks'
 import useSWR from 'swr'
 
 // Components
+import ExternalAPIPanel from '../../components/datasets/external-api/external-api-panel'
 import Datasets from './Datasets'
 import DatasetFooter from './DatasetFooter'
 import ApiServer from './ApiServer'
@@ -16,6 +17,8 @@ import TabSliderNew from '@/app/components/base/tab-slider-new'
 import SearchInput from '@/app/components/base/search-input'
 import TagManagementModal from '@/app/components/base/tag-management'
 import TagFilter from '@/app/components/base/tag-management/filter'
+import Button from '@/app/components/base/button'
+import { ApiConnectionMod } from '@/app/components/base/icons/src/vender/solid/development'
 
 // Services
 import { fetchDatasetApiBaseUrl } from '@/service/datasets'
@@ -24,6 +27,7 @@ import { fetchDatasetApiBaseUrl } from '@/service/datasets'
 import { useTabSearchParams } from '@/hooks/use-tab-searchparams'
 import { useStore as useTagStore } from '@/app/components/base/tag-management/store'
 import { useAppContext } from '@/context/app-context'
+import { useExternalApiPanel } from '@/context/external-api-panel-context'
 import { useAiDeliveryContext } from '@/context/ai-delivery-context'
 
 const Container = () => {
@@ -32,6 +36,7 @@ const Container = () => {
   const { currentWorkspace } = useAppContext()
   const { isIframe } = useAiDeliveryContext()
   const showTagManagementModal = useTagStore(s => s.showTagManagementModal)
+  const { showExternalApiPanel, setShowExternalApiPanel } = useExternalApiPanel()
 
   const options = useMemo(() => {
     return [
@@ -73,7 +78,7 @@ const Container = () => {
       }, '*')
       return router.replace('/apps')
     }
-  }, [currentWorkspace])
+  }, [currentWorkspace, router])
 
   useEffect(() => {
     // 原代码
@@ -81,7 +86,7 @@ const Container = () => {
     //   return router.replace('/apps')
     if (!isIframe && currentWorkspace.role === 'normal')
       return router.replace('/apps')
-  }, [currentWorkspace])
+  }, [currentWorkspace, router])
 
   return (
     <div ref={containerRef} className='grow relative flex flex-col bg-gray-100 overflow-y-auto'>
@@ -95,11 +100,18 @@ const Container = () => {
           <div className='flex items-center gap-2'>
             <TagFilter type='knowledge' value={tagFilterValue} onChange={handleTagsChange} />
             <SearchInput className='w-[200px]' value={keywords} onChange={handleKeywordsChange} />
+            <div className="w-[1px] h-4 bg-divider-regular" />
+            <Button
+              className='gap-0.5 shadows-shadow-xs'
+              onClick={() => setShowExternalApiPanel(true)}
+            >
+              <ApiConnectionMod className='w-4 h-4 text-components-button-secondary-text' />
+              <div className='flex px-0.5 justify-center items-center gap-1 text-components-button-secondary-text system-sm-medium'>{t('dataset.externalAPIPanelTitle')}</div>
+            </Button>
           </div>
         )}
         {activeTab === 'api' && data && <ApiServer apiBaseUrl={data.api_base_url || ''} />}
       </div>
-
       {activeTab === 'dataset' && (
         <>
           <Datasets containerRef={containerRef} tags={tagIDs} keywords={searchKeywords} />
@@ -109,10 +121,10 @@ const Container = () => {
           )}
         </>
       )}
-
       {activeTab === 'api' && data && <Doc apiBaseUrl={data.api_base_url || ''} />}
-    </div>
 
+      {showExternalApiPanel && <ExternalAPIPanel onClose={() => setShowExternalApiPanel(false)} />}
+    </div>
   )
 }
 

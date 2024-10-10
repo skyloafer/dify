@@ -1,6 +1,6 @@
 'use client'
 import type { FC, SVGProps } from 'react'
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import type { NextRouter } from 'next/router'
 import useSWR from 'swr'
@@ -25,6 +25,7 @@ import {
   // CommandLineIcon as CommandLineSolidIcon,
   DocumentTextIcon as DocumentTextSolidIcon,
 } from '@heroicons/react/24/solid'
+import Link from 'next/link'
 import s from './style.module.css'
 import classNames from '@/utils/classnames'
 import { fetchDatasetDetail, fetchDatasetRelatedApps } from '@/service/datasets'
@@ -236,14 +237,27 @@ const DatasetDetailLayout: FC<IAppDetailLayoutProps> = (props) => {
     datasetId,
   }, apiParams => fetchDatasetRelatedApps(apiParams.datasetId))
 
-  const navigation = [
-    { name: t('common.datasetMenus.documents'), href: `/datasets/${datasetId}/documents`, icon: DocumentTextIcon, selectedIcon: DocumentTextSolidIcon },
-    { name: t('common.datasetMenus.hitTesting'), href: `/datasets/${datasetId}/hitTesting`, icon: TargetIcon, selectedIcon: TargetSolidIcon },
-    // { name: 'api & webhook', href: `/datasets/${datasetId}/api`, icon: CommandLineIcon, selectedIcon: CommandLineSolidIcon },
-    { name: t('common.datasetMenus.settings'), href: `/datasets/${datasetId}/settings`, icon: Cog8ToothIcon, selectedIcon: Cog8ToothSolidIcon },
+  const navigation = useMemo(() => {
+    const baseNavigation = [
+      { name: t('common.datasetMenus.hitTesting'), href: `/datasets/${datasetId}/hitTesting`, icon: TargetIcon, selectedIcon: TargetSolidIcon },
+      // { name: 'api & webhook', href: `/datasets/${datasetId}/api`, icon: CommandLineIcon, selectedIcon: CommandLineSolidIcon },
+      { name: t('common.datasetMenus.settings'), href: `/datasets/${datasetId}/settings`, icon: Cog8ToothIcon, selectedIcon: Cog8ToothSolidIcon },
+    ]
+
+    if (datasetRes?.provider !== 'external') {
+      baseNavigation.unshift({
+        name: t('common.datasetMenus.documents'),
+        href: `/datasets/${datasetId}/documents`,
+        icon: DocumentTextIcon,
+        selectedIcon: DocumentTextSolidIcon,
+      })
+    }
     // 如果加载至Iframe中，则需要返回知识库的菜单
-    ...(isIframe ? [{ name: '返回知识库', href: '/datasets', icon: RiBook2Line, selectedIcon: RiBook2Fill }] : []),
-  ]
+    if(isIframe){
+      baseNavigation.push({ name: '返回知识库', href: '/datasets', icon: RiBook2Line, selectedIcon: RiBook2Fill })
+    }
+    return baseNavigation
+  }, [datasetRes?.provider, datasetId, t, isIframe])
 
   useEffect(() => {
     if (datasetRes)
@@ -268,6 +282,7 @@ const DatasetDetailLayout: FC<IAppDetailLayoutProps> = (props) => {
         icon={datasetRes?.icon || 'https://static.dify.ai/images/dataset-default-icon.png'}
         icon_background={datasetRes?.icon_background || '#F5F5F5'}
         desc={datasetRes?.description || '--'}
+        isExternal={datasetRes?.provider === 'external'}
         navigation={navigation}
         extraInfo={!isCurrentWorkspaceDatasetOperator
           ? mode => <ExtraInfo isMobile={mode === 'collapse'}
