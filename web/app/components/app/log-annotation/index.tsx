@@ -41,7 +41,7 @@ const LogAnnotation: FC<Props> = ({
   }
 
   return (
-    <div className='pt-4 px-6 h-full flex flex-col'>
+    <div className='pt-4 px-6 h-full flex flex-col overflow-auto'>
       {appDetail.mode !== 'workflow' && (
         <TabSlider
           className='shrink-0'
