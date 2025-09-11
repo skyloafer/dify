@@ -228,19 +228,18 @@ const Apps = ({
   }
   const filteredList = useMemo(() => {
     if(activeTab === 'all') return installedApps
-    return installedApps.filter(item => item.tag === activeTab)
+    return installedApps.filter((item: any) => item.tag === activeTab)
   }, [activeTab, installedApps])
 
   const getAppDetail = async (appId: string) => {
-    fetchAppDetailByID({ url: '/apps', id: appId }).then((res: any) => {
-      const { app_base_url, access_token } = res.site
-      let appMode = res.mode
-      if (appMode === 'agent-chat' || appMode === 'advanced-chat')
-        appMode = 'chat'
+    const app: any = await fetchAppDetailByID({ url: '/apps', id: appId })
+    const { app_base_url, access_token } = app.site
+    let appMode = app.mode
+    if (appMode === 'agent-chat' || appMode === 'advanced-chat')
+      appMode = 'chat'
 
-      const appUrl = `${app_base_url}/${appMode}/${access_token}`
-      window.open(appUrl, '_blank')
-    })
+    const appUrl = `${app_base_url}/${appMode}/${access_token}`
+    window.open(appUrl, '_blank')
   }
 
   const [currApp, setCurrApp] = React.useState<App | null>(null)
@@ -334,7 +333,7 @@ const Apps = ({
             'grid shrink-0 content-start',
             pageType === PageType.EXPLORE ? 'gap-6 px-6 sm:px-12' : 'gap-3 px-8  sm:!grid-cols-2 md:!grid-cols-3 lg:!grid-cols-4',
           )}>
-          {filteredList.map(app => (
+          {filteredList.map((app: any) => (
             <AppCard
               key={app?.id}
               isExplore={pageType === PageType.EXPLORE}
