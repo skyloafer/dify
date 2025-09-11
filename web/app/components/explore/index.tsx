@@ -3,12 +3,13 @@ import type { FC } from 'react'
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import ExploreContext from '@/context/explore-context'
-import Sidebar from '@/app/components/explore/sidebar'
 import { useAppContext } from '@/context/app-context'
 import { fetchMembers } from '@/service/common'
 import type { InstalledApp } from '@/models/explore'
 import { useTranslation } from 'react-i18next'
 import useDocumentTitle from '@/hooks/use-document-title'
+import styles from './index.module.css'
+import cn from '@/utils/classnames'
 
 export type IExploreProps = {
   children: React.ReactNode
@@ -43,7 +44,7 @@ const Explore: FC<IExploreProps> = ({
   }, [isCurrentWorkspaceDatasetOperator])
 
   return (
-    <div className='flex h-full overflow-hidden border-t border-divider-regular bg-background-body'>
+    <div className={cn(styles.bgImg, 'flex h-full overflow-hidden border-t border-divider-regular')}>
       <ExploreContext.Provider
         value={
           {
@@ -57,7 +58,7 @@ const Explore: FC<IExploreProps> = ({
           }
         }
       >
-        <Sidebar controlUpdateInstalledApps={controlUpdateInstalledApps} />
+        {/* <Sidebar controlUpdateInstalledApps={controlUpdateInstalledApps} /> */}
         <div className='w-0 grow'>
           {children}
         </div>

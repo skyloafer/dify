@@ -89,6 +89,7 @@ const Header = () => {
               alt='logo'
             />
             : <DifyLogo />}
+          <span className='ml-4 text-[22px] font-semibold'>交付中心AI交付作业平台</span>
         </Link>
         <div className='mx-1.5 shrink-0 font-light text-divider-deep'>/</div>
         <WorkspaceProvider>
