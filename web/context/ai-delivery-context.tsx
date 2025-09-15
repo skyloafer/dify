@@ -1,6 +1,8 @@
 'use client'
 
 import { createContext, useContext } from 'use-context-selector'
+import HeaderWrapper from '@/app/components/header/header-wrapper'
+import Header from '@/app/components/header'
 
 export type AiDeliveryContextValue = {
   isIframe: boolean
@@ -16,11 +18,25 @@ type IAiDeliveryProviderProps = {
 
 export const AiDeliveryProvider = ({ children }: IAiDeliveryProviderProps) => {
   const currentIsIframe = window.top !== window
-  return (
-    <AiDeliveryContext.Provider value={{
-      isIframe: currentIsIframe,
-    }}>{children}</AiDeliveryContext.Provider>
-  )
+  if(!currentIsIframe) {
+    return (
+      <AiDeliveryContext.Provider value={{
+        isIframe: currentIsIframe,
+      }}>
+        <HeaderWrapper>
+          <Header />
+        </HeaderWrapper>
+        {children}
+      </AiDeliveryContext.Provider>
+    )
+  }
+  else {
+    return (
+      <AiDeliveryContext.Provider value={{
+        isIframe: currentIsIframe,
+      }}>{children}</AiDeliveryContext.Provider>
+    )
+  }
 }
 
 export const useAiDeliveryContext = () => useContext(AiDeliveryContext)

@@ -185,7 +185,7 @@ export default function AppSelector() {
                               <RiInformation2Line className='size-4 shrink-0 text-text-tertiary' />
                               <div className='system-md-regular grow px-1 text-text-secondary'>{t('common.userProfile.about')}</div>
                               <div className='flex shrink-0 items-center'>
-                                <div className='system-xs-regular mr-2 text-text-tertiary'>{langGeniusVersionInfo.current_version}</div>
+                                <div className='system-xs-regular mr-2 text-text-tertiary'>{langGeniusVersionInfo.current_version} v1</div>
                                 <Indicator color={langGeniusVersionInfo.current_version === langGeniusVersionInfo.latest_version ? 'green' : 'orange'} />
                               </div>
                             </div>
