@@ -285,8 +285,8 @@ x-shared-env: &shared-api-worker-env
   BAIDU_VECTOR_DB_DATABASE: ${BAIDU_VECTOR_DB_DATABASE:-dify}
   BAIDU_VECTOR_DB_SHARD: ${BAIDU_VECTOR_DB_SHARD:-1}
   BAIDU_VECTOR_DB_REPLICAS: ${BAIDU_VECTOR_DB_REPLICAS:-3}
-  VIKINGDB_ACCESS_KEY: ${VIKINGDB_ACCESS_KEY:-your-ak}
-  VIKINGDB_SECRET_KEY: ${VIKINGDB_SECRET_KEY:-your-sk}
+  VIKINGDB_ACCESS_KEY: ${VIKINGDB_ACCESS_KEY:-dify}
+  VIKINGDB_SECRET_KEY: ${VIKINGDB_SECRET_KEY:-dify}
   VIKINGDB_REGION: ${VIKINGDB_REGION:-cn-shanghai}
   VIKINGDB_HOST: ${VIKINGDB_HOST:-api-vikingdb.xxx.volces.com}
   VIKINGDB_SCHEMA: ${VIKINGDB_SCHEMA:-http}
@@ -733,7 +733,7 @@ services:
 
   # The DifySandbox
   sandbox:
-    image: skyloafer/dify-sandbox:0.2.12
+    image: langgenius/dify-sandbox:0.2.12
     restart: always
     environment:
       # The DifySandbox configurations
@@ -757,7 +757,7 @@ services:
 
   # plugin daemon
   plugin_daemon:
-    image: skyloafer/dify-plugin-daemon:0.2.0-local
+    image: langgenius/dify-plugin-daemon:0.2.0-local
     restart: always
     environment:
       # Use the shared environment variables.
@@ -877,6 +877,9 @@ services:
       - ./volumes/certbot/conf/live:/etc/letsencrypt/live # cert dir (with certbot container)
       - ./volumes/certbot/conf:/etc/letsencrypt
       - ./volumes/certbot/www:/var/www/html
+      - ./volumes/forward:/var/forward
+      - ./volumes/fileStore:/var/fileStore
+      - ./volumes/designWeb/:/var/designWeb
     entrypoint:
       [
         "sh",
@@ -934,7 +937,7 @@ services:
   # Qdrant vector store.
   # (if used, you need to set VECTOR_STORE to qdrant in the api & worker service.)
   qdrant:
-    image: skyloafer/qdrant:v1.7.3
+    image: langgenius/qdrant:v1.7.3
     profiles:
       - qdrant
     restart: always
@@ -1339,6 +1342,39 @@ services:
     restart: always
     volumes:
       - ./volumes/unstructured:/app/data
+
+  aidelivery-app:
+    image: iceicefrog/aidelivery-app:v2
+    container_name: aidelivery-app
+    depends_on:
+      - db
+      - redis
+    restart: always
+    environment:
+      # Use the shared environment variables.
+      <<: *shared-api-worker-env
+    networks:
+      - ssrf_proxy_network
+      - default
+    volumes:
+      - ./volumes/fileStore:/var/fileStore
+
+  aidelivery-ui:
+    image: iceicefrog/aidelivery-ui:v2
+    container_name: aidelivery-ui
+    restart: always
+    networks:
+      - ssrf_proxy_network
+      - default
+
+  db-design-app:
+    image: de-design-copilot:202409141535
+    container_name: db-design-app
+    restart: always
+    networks:
+      - ssrf_proxy_network
+      - default
+
 
 networks:
   # create a network between sandbox, api and ssrf_proxy, and can not access outside.
