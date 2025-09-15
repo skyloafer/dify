@@ -25,7 +25,7 @@ export default function MailAndPasswordAuth({ isInvite, isEmailSetup, allowRegis
   const { locale } = useContext(I18NContext)
   const router = useRouter()
   const searchParams = useSearchParams()
-  const [showPassword, setShowPassword] = useState(false)
+  const [showPassword] = useState(false)
   const emailFromLink = decodeURIComponent(searchParams.get('email') || '')
   const [email, setEmail] = useState(emailFromLink)
   const [password, setPassword] = useState('')
@@ -151,7 +151,7 @@ export default function MailAndPasswordAuth({ isInvite, isEmailSetup, allowRegis
           placeholder={t('login.passwordPlaceholder') || ''}
           tabIndex={2}
         />
-        <div className="absolute inset-y-0 right-0 flex items-center">
+        {/* <div className="absolute inset-y-0 right-0 flex items-center">
           <Button
             type="button"
             variant='ghost'
@@ -159,7 +159,7 @@ export default function MailAndPasswordAuth({ isInvite, isEmailSetup, allowRegis
           >
             {showPassword ? '👀' : '😝'}
           </Button>
-        </div>
+        </div> */}
       </div>
     </div>
 
