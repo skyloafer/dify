@@ -102,7 +102,7 @@ const List = () => {
   })
 
   const { data, isLoading, error, setSize, mutate } = useSWRInfinite(
-    (pageIndex: number, previousPageData: AppListResponse) => getKey(pageIndex, previousPageData, activeTab, isCreatedByMe, tagIDs, searchKeywords),
+    (pageIndex: number, previousPageData: AppListResponse) => getKey(pageIndex, previousPageData, activeTab, isCurrentWorkspaceEditor ? isCreatedByMe : true, tagIDs, searchKeywords),
     fetchAppList,
     {
       revalidateFirstPage: true,
@@ -191,12 +191,15 @@ const List = () => {
             options={options}
           />
           <div className='flex items-center gap-2'>
-            <CheckboxWithLabel
-              className='mr-2'
-              label={t('app.showMyCreatedAppsOnly')}
-              isChecked={isCreatedByMe}
-              onChange={handleCreatedByMeChange}
-            />
+            {isCurrentWorkspaceEditor && (
+              <CheckboxWithLabel
+                className='mr-2'
+                disabled={!isCurrentWorkspaceEditor}
+                label={t('app.showMyCreatedAppsOnly')}
+                isChecked={isCreatedByMe}
+                onChange={handleCreatedByMeChange}
+              />
+            )}
             <TagFilter type='app' value={tagFilterValue} onChange={handleTagsChange} />
             <Input
               showLeftIcon

@@ -8,6 +8,7 @@ import Tooltip from '@/app/components/base/tooltip'
 type Props = {
   className?: string
   isChecked: boolean
+  disabled?: boolean
   onChange: (isChecked: boolean) => void
   label: string
   labelClassName?: string
@@ -17,6 +18,7 @@ type Props = {
 const CheckboxWithLabel: FC<Props> = ({
   className = '',
   isChecked,
+  disabled,
   onChange,
   label,
   labelClassName,
@@ -24,7 +26,7 @@ const CheckboxWithLabel: FC<Props> = ({
 }) => {
   return (
     <label className={cn(className, 'flex h-7 items-center space-x-2')}>
-      <Checkbox checked={isChecked} onCheck={() => onChange(!isChecked)} />
+      <Checkbox checked={isChecked} disabled={disabled} onCheck={() => onChange(!isChecked)} />
       <div className={cn('text-sm font-normal text-text-secondary', labelClassName)}>{label}</div>
       {tooltip && (
         <Tooltip
