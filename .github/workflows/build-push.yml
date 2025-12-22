@@ -9,7 +9,6 @@ on:
       - "build/**"
       - "release/e-*"
       - "1.8.1-tw"
-      - "1.8.1-tw-1"
     tags:
       - "*"
 
