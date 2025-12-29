@@ -70,7 +70,7 @@ const List = () => {
   const { t } = useTranslation()
   const { systemFeatures } = useGlobalPublicStore()
   const router = useRouter()
-  const { isCurrentWorkspaceEditor, isCurrentWorkspaceDatasetOperator } = useAppContext()
+  const { isCurrentWorkspaceEditor, isCurrentWorkspaceDatasetOperator, isCurrentWorkspaceManager } = useAppContext()
   const showTagManagementModal = useTagStore(s => s.showTagManagementModal)
   const [activeTab, setActiveTab] = useTabSearchParams({
     defaultTab: 'all',
@@ -102,7 +102,7 @@ const List = () => {
   })
 
   const { data, isLoading, error, setSize, mutate } = useSWRInfinite(
-    (pageIndex: number, previousPageData: AppListResponse) => getKey(pageIndex, previousPageData, activeTab, isCurrentWorkspaceEditor ? isCreatedByMe : true, tagIDs, searchKeywords),
+    (pageIndex: number, previousPageData: AppListResponse) => getKey(pageIndex, previousPageData, activeTab, isCurrentWorkspaceManager ? isCreatedByMe : true, tagIDs, searchKeywords),
     fetchAppList,
     {
       revalidateFirstPage: true,
@@ -191,10 +191,10 @@ const List = () => {
             options={options}
           />
           <div className='flex items-center gap-2'>
-            {isCurrentWorkspaceEditor && (
+            {isCurrentWorkspaceManager && (
               <CheckboxWithLabel
                 className='mr-2'
-                disabled={!isCurrentWorkspaceEditor}
+                disabled={!isCurrentWorkspaceManager}
                 label={t('app.showMyCreatedAppsOnly')}
                 isChecked={isCreatedByMe}
                 onChange={handleCreatedByMeChange}
