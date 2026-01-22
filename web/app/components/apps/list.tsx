@@ -32,8 +32,6 @@ import TagFilter from '@/app/components/base/tag-management/filter'
 import CheckboxWithLabel from '@/app/components/datasets/create/website/base/checkbox-with-label'
 import dynamic from 'next/dynamic'
 import Empty from './empty'
-import Footer from './footer'
-import { useGlobalPublicStore } from '@/context/global-public-context'
 
 const TagManagementModal = dynamic(() => import('@/app/components/base/tag-management'), {
   ssr: false,
@@ -68,7 +66,6 @@ const getKey = (
 
 const List = () => {
   const { t } = useTranslation()
-  const { systemFeatures } = useGlobalPublicStore()
   const router = useRouter()
   const { isCurrentWorkspaceEditor, isCurrentWorkspaceDatasetOperator, isCurrentWorkspaceManager } = useAppContext()
   const showTagManagementModal = useTagStore(s => s.showTagManagementModal)
@@ -234,9 +231,6 @@ const List = () => {
             <RiDragDropLine className="h-4 w-4" />
             <span className="system-xs-regular">{t('app.newApp.dropDSLToCreateApp')}</span>
           </div>
-        )}
-        {!systemFeatures.branding.enabled && (
-          <Footer />
         )}
         <CheckModal />
         <div ref={anchorRef} className='h-0'> </div>
