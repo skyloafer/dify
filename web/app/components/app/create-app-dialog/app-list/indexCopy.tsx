@@ -28,7 +28,6 @@ import Input from "@/app/components/base/input";
 import type { AppMode } from "@/types/app";
 import { DSLImportMode } from "@/models/app";
 import { usePluginDependencies } from "@/app/components/workflow/plugin-dependency/hooks";
-import { basePath } from "@/utils/var";
 
 type AppsProps = {
   onSuccess?: () => void;
@@ -166,68 +165,33 @@ const Apps = ({ onSuccess, onCreateFromBlank }: AppsProps) => {
       </div>
     );
   }
-  const handleClose = () => {
-    // 如果有父组件传入的onSuccess回调，调用它
-    if (onSuccess) {
-      onSuccess();
-    }
-    // 或者可以通过其他方式关闭对话框，例如：
-    // - 调用父组件的关闭函数
-    // - 修改状态来隐藏当前组件
-  };
 
   return (
     <div className="flex h-full flex-col">
-      <div
-        className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-[10px] bg-components-button-tertiary-bg hover:bg-components-button-tertiary-bg-hover ml-5 mt-3"
-        style={{ marginBottom: "10px" }}
-        onClick={handleClose}
-      >
-        <img
-          src={`${basePath}/icon/FH-icon.png`}
-          alt=""
-          style={{ width: "20px", height: "20px" }}
-        />
-      </div>
-      <div>
-        <div
-          className="flex items-center justify-between border-b border-divider-burn py-3"
-          style={{ marginTop: "0", marginRight: "1.25rem" }}
-        >
-          <div className="min-w-[180px] pl-5 pt-2">
-            <span className="title-xl-semi-bold text-text-primary">
-              {t("app.newApp.startFromTemplate")}
-            </span>
-          </div>
-          <div className="flex items-center  p-1.5 ">
-            <div
-              style={{ background: "#fff" }}
-              className="border border-components-panel-border rounded-xl"
-            >
-              <AppTypeSelector value={currentType} onChange={setCurrentType} />
-            </div>
-            {/* <div className="h-[14px]">
-              <Divider type="vertical" />
-            </div> */}
-            <div
-              style={{ background: "#fff", marginLeft: "10px" }}
-              className="border border-components-panel-border rounded-xl"
-            >
-              <Input
-                showClearIcon
-                wrapperClassName="w-full flex-1"
-                className="bg-transparent hover:border-transparent hover:bg-transparent focus:border-transparent focus:bg-transparent focus:shadow-none"
-                placeholder={
-                  t("app.newAppFromTemplate.searchAllTemplate") as string
-                }
-                value={keywords}
-                onChange={(e) => handleKeywordsChange(e.target.value)}
-                onClear={() => handleKeywordsChange("")}
-              />
-            </div>
-          </div>
-          {/* <div className="h-8 w-[180px]"></div> */}
+      <div className="flex items-center justify-between border-b border-divider-burn py-3">
+        <div className="min-w-[180px] pl-5">
+          <span className="title-xl-semi-bold text-text-primary">
+            {t("app.newApp.startFromTemplate")}
+          </span>
         </div>
+        <div className="flex max-w-[548px] flex-1 items-center rounded-xl border border-components-panel-border bg-components-panel-bg-blur p-1.5 shadow-md">
+          <AppTypeSelector value={currentType} onChange={setCurrentType} />
+          <div className="h-[14px]">
+            <Divider type="vertical" />
+          </div>
+          <Input
+            showClearIcon
+            wrapperClassName="w-full flex-1"
+            className="bg-transparent hover:border-transparent hover:bg-transparent focus:border-transparent focus:bg-transparent focus:shadow-none"
+            placeholder={
+              t("app.newAppFromTemplate.searchAllTemplate") as string
+            }
+            value={keywords}
+            onChange={(e) => handleKeywordsChange(e.target.value)}
+            onClear={() => handleKeywordsChange("")}
+          />
+        </div>
+        <div className="h-8 w-[180px]"></div>
       </div>
       <div className="relative flex flex-1 overflow-y-auto">
         {!searchKeywords && (

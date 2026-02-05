@@ -1,28 +1,34 @@
-import DownloadCount from './base/download-count'
+import DownloadCount from "./base/download-count";
 
 type Props = {
-  downloadCount?: number
-  tags: string[]
-}
+  downloadCount?: number;
+  tags: string[];
+};
 
-const CardMoreInfo = ({
-  downloadCount,
-  tags,
-}: Props) => {
+const CardMoreInfo = ({ downloadCount, tags }: Props) => {
   return (
     <div className="flex h-5 items-center">
-      {downloadCount !== undefined && <DownloadCount downloadCount={downloadCount} />}
-      {downloadCount !== undefined && tags && tags.length > 0 && <div className="system-xs-regular mx-2 text-text-quaternary">·</div>}
+      {downloadCount !== undefined && (
+        <DownloadCount downloadCount={downloadCount} />
+      )}
+      {downloadCount !== undefined && tags && tags.length > 0 && (
+        <div className="system-xs-regular mx-2 text-text-quaternary">·</div>
+      )}
       {tags && tags.length > 0 && (
         <>
-          <div className="flex h-4 flex-wrap space-x-2 overflow-hidden">
-            {tags.map(tag => (
+          <div className="flex flex-wrap space-x-2 overflow-hidden">
+            {tags.map((tag) => (
               <div
                 key={tag}
                 className="system-xs-regular flex max-w-[120px] space-x-1 overflow-hidden"
                 title={`# ${tag}`}
+                style={{
+                  padding: "2px 10px 4px",
+                  borderRadius: "12px",
+                  background: "rgb(200,206,218,0.25)",
+                }}
               >
-                <span className="text-text-quaternary">#</span>
+                {/* <span className="text-text-quaternary">#</span> */}
                 <span className="truncate text-text-tertiary">{tag}</span>
               </div>
             ))}
@@ -30,7 +36,7 @@ const CardMoreInfo = ({
         </>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default CardMoreInfo
+export default CardMoreInfo;

@@ -1,91 +1,100 @@
-import React, { useEffect, useState } from 'react'
-import { usePathname } from 'next/navigation'
-import { useShallow } from 'zustand/react/shallow'
-import { RiLayoutLeft2Line, RiLayoutRight2Line } from '@remixicon/react'
-import NavLink from './navLink'
-import type { NavIcon } from './navLink'
-import AppBasic from './basic'
-import AppInfo from './app-info'
-import DatasetInfo from './dataset-info'
-import AppSidebarDropdown from './app-sidebar-dropdown'
-import useBreakpoints, { MediaType } from '@/hooks/use-breakpoints'
-import { useStore as useAppStore } from '@/app/components/app/store'
-import { useEventEmitterContextContext } from '@/context/event-emitter'
-import cn from '@/utils/classnames'
+import React, { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import { useShallow } from "zustand/react/shallow";
+import { RiLayoutLeft2Line, RiLayoutRight2Line } from "@remixicon/react";
+import NavLink from "./navLink";
+import type { NavIcon } from "./navLink";
+import AppBasic from "./basic";
+import AppInfo from "./app-info";
+import DatasetInfo from "./dataset-info";
+import AppSidebarDropdown from "./app-sidebar-dropdown";
+import useBreakpoints, { MediaType } from "@/hooks/use-breakpoints";
+import { useStore as useAppStore } from "@/app/components/app/store";
+import { useEventEmitterContextContext } from "@/context/event-emitter";
+import cn from "@/utils/classnames";
 
 export type IAppDetailNavProps = {
-  iconType?: 'app' | 'dataset' | 'notion'
-  title: string
-  desc: string
-  isExternal?: boolean
-  icon: string
-  icon_background: string | null
+  iconType?: "app" | "dataset" | "notion";
+  title: string;
+  desc: string;
+  isExternal?: boolean;
+  icon: string;
+  icon_background: string | null;
   navigation: Array<{
-    name: string
-    href: string
-    icon: NavIcon
-    selectedIcon: NavIcon
-  }>
-  extraInfo?: (modeState: string) => React.ReactNode
-}
+    name: string;
+    href: string;
+    icon: NavIcon;
+    selectedIcon: NavIcon;
+  }>;
+  extraInfo?: (modeState: string) => React.ReactNode;
+};
 
-const AppDetailNav = ({ title, desc, isExternal, icon, icon_background, navigation, extraInfo, iconType = 'app' }: IAppDetailNavProps) => {
-  const { appSidebarExpand, setAppSiderbarExpand } = useAppStore(useShallow(state => ({
-    appSidebarExpand: state.appSidebarExpand,
-    setAppSiderbarExpand: state.setAppSiderbarExpand,
-  })))
-  const media = useBreakpoints()
-  const isMobile = media === MediaType.mobile
-  const expand = appSidebarExpand === 'expand'
+const AppDetailNav = ({
+  title,
+  desc,
+  isExternal,
+  icon,
+  icon_background,
+  navigation,
+  extraInfo,
+  iconType = "app",
+}: IAppDetailNavProps) => {
+  const { appSidebarExpand, setAppSiderbarExpand } = useAppStore(
+    useShallow((state) => ({
+      appSidebarExpand: state.appSidebarExpand,
+      setAppSiderbarExpand: state.setAppSiderbarExpand,
+    })),
+  );
+  const media = useBreakpoints();
+  const isMobile = media === MediaType.mobile;
+  const expand = appSidebarExpand === "expand";
 
   const handleToggle = (state: string) => {
-    setAppSiderbarExpand(state === 'expand' ? 'collapse' : 'expand')
-  }
+    setAppSiderbarExpand(state === "expand" ? "collapse" : "expand");
+  };
 
   // // Check if the current path is a workflow canvas & fullscreen
-  const pathname = usePathname()
-  const inWorkflowCanvas = pathname.endsWith('/workflow')
-  const workflowCanvasMaximize = localStorage.getItem('workflow-canvas-maximize') === 'true'
-  const [hideHeader, setHideHeader] = useState(workflowCanvasMaximize)
-  const { eventEmitter } = useEventEmitterContextContext()
+  const pathname = usePathname();
+  const inWorkflowCanvas = pathname.endsWith("/workflow");
+  const workflowCanvasMaximize =
+    localStorage.getItem("workflow-canvas-maximize") === "true";
+  const [hideHeader, setHideHeader] = useState(workflowCanvasMaximize);
+  const { eventEmitter } = useEventEmitterContextContext();
 
   eventEmitter?.useSubscription((v: any) => {
-    if (v?.type === 'workflow-canvas-maximize')
-      setHideHeader(v.payload)
-  })
+    if (v?.type === "workflow-canvas-maximize") setHideHeader(v.payload);
+  });
 
   useEffect(() => {
     if (appSidebarExpand) {
-      localStorage.setItem('app-detail-collapse-or-expand', appSidebarExpand)
-      setAppSiderbarExpand(appSidebarExpand)
+      localStorage.setItem("app-detail-collapse-or-expand", appSidebarExpand);
+      setAppSiderbarExpand(appSidebarExpand);
     }
-  }, [appSidebarExpand, setAppSiderbarExpand])
+  }, [appSidebarExpand, setAppSiderbarExpand]);
 
   if (inWorkflowCanvas && hideHeader) {
     return (
-      <div className='flex w-0 shrink-0'>
+      <div className="flex w-0 shrink-0">
         <AppSidebarDropdown navigation={navigation} />
       </div>
-    )
+    );
   }
 
   return (
     <div
       className={`
         flex shrink-0 flex-col border-r border-divider-burn bg-background-default-subtle transition-all
-        ${expand ? 'w-[216px]' : 'w-14'}
+        ${expand ? "w-[216px]" : "w-14"}
       `}
     >
       <div
         className={`
           shrink-0
-          ${expand ? 'p-2' : 'p-1'}
+          ${expand ? "p-2" : "p-1"}
         `}
       >
-        {iconType === 'app' && (
-          <AppInfo expand={expand} />
-        )}
-        {iconType === 'dataset' && (
+        {iconType === "app" && <AppInfo expand={expand} />}
+        {iconType === "dataset" && (
           <DatasetInfo
             name={title}
             description={desc}
@@ -94,7 +103,7 @@ const AppDetailNav = ({ title, desc, isExternal, icon, icon_background, navigati
             extraInfo={extraInfo && extraInfo(appSidebarExpand)}
           />
         )}
-        {!['app', 'dataset'].includes(iconType) && (
+        {!["app", "dataset"].includes(iconType) && (
           <AppBasic
             mode={appSidebarExpand}
             iconType={iconType}
@@ -106,41 +115,48 @@ const AppDetailNav = ({ title, desc, isExternal, icon, icon_background, navigati
           />
         )}
       </div>
-      <div className='px-4'>
-        <div className={cn('mx-auto mt-1 h-px bg-divider-subtle', !expand && 'w-6')} />
+      <div className="px-4">
+        <div
+          className={cn(
+            "mx-auto mt-1 h-px bg-divider-subtle",
+            !expand && "w-6",
+          )}
+        />
       </div>
       <nav
         className={`
           grow space-y-1
-          ${expand ? 'p-4' : 'px-2.5 py-4'}
+          ${expand ? "p-4" : "px-2.5 py-4"}
         `}
       >
         {navigation.map((item, index) => {
           return (
-            <NavLink key={index} mode={appSidebarExpand} iconMap={{ selected: item.selectedIcon, normal: item.icon }} name={item.name} href={item.href} />
-          )
+            <NavLink
+              key={index}
+              mode={appSidebarExpand}
+              iconMap={{ selected: item.selectedIcon, normal: item.icon }}
+              name={item.name}
+              href={item.href}
+            />
+          );
         })}
       </nav>
-      {
-        !isMobile && (
+      {!isMobile && (
+        <div className="shrink-0 px-4 py-3">
           <div
-            className="shrink-0 px-4 py-3"
+            className="flex h-6 w-6 cursor-pointer items-center justify-center"
+            onClick={() => handleToggle(appSidebarExpand)}
           >
-            <div
-              className='flex h-6 w-6 cursor-pointer items-center justify-center'
-              onClick={() => handleToggle(appSidebarExpand)}
-            >
-              {
-                expand
-                  ? <RiLayoutRight2Line className='h-5 w-5 text-components-menu-item-text' />
-                  : <RiLayoutLeft2Line className='h-5 w-5 text-components-menu-item-text' />
-              }
-            </div>
+            {expand ? (
+              <RiLayoutRight2Line className="h-5 w-5 text-components-menu-item-text" />
+            ) : (
+              <RiLayoutLeft2Line className="h-5 w-5 text-components-menu-item-text" />
+            )}
           </div>
-        )
-      }
+        </div>
+      )}
     </div>
-  )
-}
+  );
+};
 
-export default React.memo(AppDetailNav)
+export default React.memo(AppDetailNav);

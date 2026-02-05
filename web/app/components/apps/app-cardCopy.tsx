@@ -468,10 +468,7 @@ const AppCard = ({ app, onRefresh }: AppCardProps) => {
             {app.description}
           </div>
         </div>
-        <div
-          className="absolute bottom-1 left-0 right-0 flex h-[42px] shrink-0 items-center pb-[6px]  pt-1"
-          style={{ borderTop: "1px solid rgb(233 233 233)", margin: "0 14px" }}
-        >
+        <div className="absolute bottom-1 left-0 right-0 flex h-[42px] shrink-0 items-center pb-[6px] pl-[14px] pr-[6px] pt-1">
           {isCurrentWorkspaceEditor && (
             <>
               <div

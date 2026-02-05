@@ -30,7 +30,6 @@ import TagFilter from "@/app/components/base/tag-management/filter";
 import CheckboxWithLabel from "@/app/components/datasets/create/website/base/checkbox-with-label";
 import dynamic from "next/dynamic";
 import Empty from "./empty";
-import "@/app/styles/app-list-style.css";
 
 const TagManagementModal = dynamic(
   () => import("@/app/components/base/tag-management"),
@@ -249,115 +248,58 @@ const List = () => {
           <div className="absolute inset-0 z-50 m-0.5 rounded-2xl border-2 border-dashed border-components-dropzone-border-accent bg-[rgba(21,90,239,0.14)] p-2"></div>
         )}
 
-        <div className="sticky top-0 z-10  gap-y-2 bg-background-body px-12 pb-2 pt-4 leading-[56px]">
-          <div className="" style={{ fontSize: "24px" }}>
-            工作库
-          </div>
-          <div className="flex flex-wrap items-center justify-between">
-            <TabSliderNew
-              value={activeTab}
-              onChange={setActiveTab}
-              options={options}
+        <div className="sticky top-0 z-10 flex flex-wrap items-center justify-between gap-y-2 bg-background-body px-12 pb-2 pt-4 leading-[56px]">
+          <TabSliderNew
+            value={activeTab}
+            onChange={setActiveTab}
+            options={options}
+          />
+          <div className="flex items-center gap-2">
+            {isCurrentWorkspaceManager && (
+              <CheckboxWithLabel
+                className="mr-2"
+                disabled={!isCurrentWorkspaceManager}
+                label={t("app.showMyCreatedAppsOnly")}
+                isChecked={isCreatedByMe}
+                onChange={handleCreatedByMeChange}
+              />
+            )}
+            <TagFilter
+              type="app"
+              value={tagFilterValue}
+              onChange={handleTagsChange}
             />
-            <div className="flex items-center gap-2">
-              {isCurrentWorkspaceManager && (
-                <CheckboxWithLabel
-                  className="mr-2"
-                  disabled={!isCurrentWorkspaceManager}
-                  label={t("app.showMyCreatedAppsOnly")}
-                  isChecked={isCreatedByMe}
-                  onChange={handleCreatedByMeChange}
-                />
-              )}
-              <TagFilter
-                type="app"
-                value={tagFilterValue}
-                onChange={handleTagsChange}
-              />
-              <Input
-                showLeftIcon
-                showClearIcon
-                wrapperClassName="w-[200px]"
-                value={keywords}
-                onChange={(e) => handleKeywordsChange(e.target.value)}
-                onClear={() => handleKeywordsChange("")}
-              />
-            </div>
+            <Input
+              showLeftIcon
+              showClearIcon
+              wrapperClassName="w-[200px]"
+              value={keywords}
+              onChange={(e) => handleKeywordsChange(e.target.value)}
+              onClear={() => handleKeywordsChange("")}
+            />
           </div>
         </div>
         {data && data[0].total > 0 ? (
-          <div className="relative grid grow grid-cols-1 content-start gap-4 px-12 pt-2 ">
-            <div>
-              <div className="app_list_card_top">
-                {isCurrentWorkspaceEditor && (
-                  <NewAppCard
-                    ref={newAppCardRef}
-                    onSuccess={mutate}
-                    className="app_card_newApp"
-                  />
-                )}
-                {/* <div className="flex  gap-2">
-                  <div>
-                    <TagFilter
-                      type="app"
-                      value={tagFilterValue}
-                      onChange={handleTagsChange}
-                    />
-                  </div>
-                  <div>
-                    <Input
-                      showLeftIcon
-                      showClearIcon
-                      wrapperClassName="w-[200px]"
-                      value={keywords}
-                      onChange={(e) => handleKeywordsChange(e.target.value)}
-                      onClear={() => handleKeywordsChange("")}
-                    />
-                  </div>
-                </div> */}
-              </div>
-              <div className="app_card_container">
-                {data.map(({ data: apps }) =>
-                  apps.map((app) => (
-                    <AppCard key={app.id} app={app} onRefresh={mutate} />
-                  )),
-                )}
-              </div>
-            </div>
+          <div className="relative grid grow grid-cols-1 content-start gap-4 px-12 pt-2 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 2k:grid-cols-6">
+            {isCurrentWorkspaceEditor && (
+              <NewAppCard ref={newAppCardRef} onSuccess={mutate} />
+            )}
+            {data.map(({ data: apps }) =>
+              apps.map((app) => (
+                <AppCard key={app.id} app={app} onRefresh={mutate} />
+              )),
+            )}
           </div>
         ) : (
-          <div className="relative grid grow grid-cols-1 content-start gap-4 overflow-hidden px-12 pt-2 ">
-            <div>
-              <div className="app_list_card_top">
-                {isCurrentWorkspaceEditor && (
-                  <NewAppCard
-                    ref={newAppCardRef}
-                    className="z-10 app_card_newApp"
-                    onSuccess={mutate}
-                  />
-                )}
-                {/* <div className="flex  gap-2">
-                  <div>
-                    <TagFilter
-                      type="app"
-                      value={tagFilterValue}
-                      onChange={handleTagsChange}
-                    />
-                  </div>
-                  <div>
-                    <Input
-                      showLeftIcon
-                      showClearIcon
-                      wrapperClassName="w-[200px]"
-                      value={keywords}
-                      onChange={(e) => handleKeywordsChange(e.target.value)}
-                      onClear={() => handleKeywordsChange("")}
-                    />
-                  </div>
-                </div> */}
-              </div>
-              <Empty />
-            </div>
+          <div className="relative grid grow grid-cols-1 content-start gap-4 overflow-hidden px-12 pt-2 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 2k:grid-cols-6">
+            {isCurrentWorkspaceEditor && (
+              <NewAppCard
+                ref={newAppCardRef}
+                className="z-10"
+                onSuccess={mutate}
+              />
+            )}
+            <Empty />
           </div>
         )}
 
