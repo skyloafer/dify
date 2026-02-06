@@ -12,6 +12,7 @@ import type {
 import { fetchDatasets } from "@/service/datasets";
 import { useAppContext } from "@/context/app-context";
 import { useTranslation } from "react-i18next";
+import Link from "next/link";
 
 const getKey = (
   pageIndex: number,
@@ -85,8 +86,25 @@ const Datasets = ({ containerRef, tags, keywords, includeAll }: Props) => {
   }, [containerRef, onScroll]);
 
   return (
-    <nav className="grid shrink-0 grow grid-cols-1 content-start gap-4 px-12 pt-2 sm:grid-cols-2">
-      {isCurrentWorkspaceEditor && <NewDatasetCard ref={anchorRef} />}
+    <nav className="grid shrink-0 grow grid-cols-1 content-start gap-4 px-6 pt-2 sm:grid-cols-2">
+      {/* {isCurrentWorkspaceEditor && <NewDatasetCard ref={anchorRef} />} */}
+      {/* {isCurrentWorkspaceEditor && (
+        <div className="flex gap-3 px-12 pt-4">
+          <Link
+            href="/datasets/create"
+            className="inline-flex items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors"
+          >
+            创建知识库
+          </Link>
+
+          <Link
+            href="/datasets/connect"
+            className="inline-flex items-center justify-center rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+          >
+            连接外部知识库
+          </Link>
+        </div>
+      )} */}
       {data?.map(({ data: datasets }) =>
         datasets.map((dataset) => (
           <DatasetCard key={dataset.id} dataset={dataset} onSuccess={mutate} />

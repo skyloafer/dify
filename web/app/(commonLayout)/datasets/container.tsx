@@ -31,6 +31,7 @@ import { useAppContext } from "@/context/app-context";
 import { useExternalApiPanel } from "@/context/external-api-panel-context";
 import { useGlobalPublicStore } from "@/context/global-public-context";
 import useDocumentTitle from "@/hooks/use-document-title";
+import Link from "next/link";
 
 const Container = () => {
   const { t } = useTranslation();
@@ -102,12 +103,29 @@ const Container = () => {
         <div className="" style={{ fontSize: "24px", marginBottom: "20px" }}>
           知识库
         </div>
-        <div className="flex flex-wrap items-center justify-between">
-          <TabSliderNew
-            value={activeTab}
-            onChange={(newActiveTab) => setActiveTab(newActiveTab)}
-            options={options}
-          />
+        <div className="flex flex-wrap items-end justify-between">
+          <div>
+            <TabSliderNew
+              value={activeTab}
+              onChange={(newActiveTab) => setActiveTab(newActiveTab)}
+              options={options}
+            />
+            <div className="flex gap-3 pt-4">
+              <Link
+                href="/datasets/create"
+                className="inline-flex items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors"
+              >
+                创建知识库
+              </Link>
+
+              <Link
+                href="/datasets/connect"
+                className="inline-flex items-center justify-center rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+              >
+                连接外部知识库
+              </Link>
+            </div>
+          </div>
           {activeTab === "dataset" && (
             <div className="flex items-center justify-center gap-2">
               {isCurrentWorkspaceOwner && (

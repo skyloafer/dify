@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import { useContext } from "use-context-selector";
 import useSWR from "swr";
 import { useDebounceFn } from "ahooks";
-import { RiRobot2Line, RiThumbUpLine } from "@remixicon/react";
+import { RiRobot2Line } from "@remixicon/react";
 import AppCard from "../app-card";
 import Sidebar, { AppCategories, AppCategoryLabel } from "./sidebar";
 import Toast from "@/app/components/base/toast";
@@ -29,12 +29,16 @@ import type { AppMode } from "@/types/app";
 import { DSLImportMode } from "@/models/app";
 import { usePluginDependencies } from "@/app/components/workflow/plugin-dependency/hooks";
 import { basePath } from "@/utils/var";
-// import { RiStickyNoteAddLine, RiThumbUpLine } from '@remixicon/react'
 
 type AppsProps = {
   onSuccess?: () => void;
   onCreateFromBlank?: () => void;
 };
+
+// export enum PageType {
+//   EXPLORE = 'explore',
+//   CREATE = 'create',
+// }
 
 const Apps = ({ onSuccess, onCreateFromBlank }: AppsProps) => {
   const { t } = useTranslation();
@@ -162,16 +166,18 @@ const Apps = ({ onSuccess, onCreateFromBlank }: AppsProps) => {
       </div>
     );
   }
-
   const handleClose = () => {
+    // 如果有父组件传入的onSuccess回调，调用它
     if (onSuccess) {
       onSuccess();
     }
+    // 或者可以通过其他方式关闭对话框，例如：
+    // - 调用父组件的关闭函数
+    // - 修改状态来隐藏当前组件
   };
 
   return (
     <div className="flex h-full flex-col">
-      {/* 返回按钮 */}
       <div
         className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-[10px] bg-components-button-tertiary-bg hover:bg-components-button-tertiary-bg-hover ml-5 mt-3"
         style={{ marginBottom: "10px" }}
@@ -183,124 +189,106 @@ const Apps = ({ onSuccess, onCreateFromBlank }: AppsProps) => {
           style={{ width: "20px", height: "20px" }}
         />
       </div>
-      <div className="min-w-[180px] pl-5 pt-2">
-        <span className="title-xl-semi-bold text-text-primary">
-          {t("app.newApp.startFromTemplate")}
-        </span>
-      </div>
-      {/* 顶部导航栏：分类 + 搜索 + 类型选择 */}
-      <div className="flex items-center justify-between border-b border-divider-burn py-3 px-5 ">
-        {/* 分类标签 */}
-        <div className="flex space-x-2 overflow-x-auto pb-1">
-          {/* 推荐类别始终显示在最前面 */}
-          <button
-            key={AppCategories.RECOMMENDED}
-            onClick={() => setCurrCategory(AppCategories.RECOMMENDED)}
-            className={`px-3 py-1 text-sm font-medium rounded-md transition-colors relative ${
-              currCategory === AppCategories.RECOMMENDED
-                ? "text-primary-700"
-                : "text-gray-600 hover:text-gray-800"
-            }`}
-          >
-            <span>{t("app.newAppFromTemplate.sidebar.Recommended")}</span>
-            {currCategory === AppCategories.RECOMMENDED && (
-              <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary-500 rounded-full"></span>
-            )}
-          </button>
-
-          {/* 其他类别 */}
-          {categories.map((category) => (
-            <button
-              key={category}
-              onClick={() => setCurrCategory(category)}
-              className={`px-3 py-1 text-sm font-medium rounded-md transition-colors relative ${
-                currCategory === category
-                  ? "text-primary-700"
-                  : "text-gray-600 hover:text-gray-800"
-              }`}
-            >
-              <span>{category}</span>
-              {currCategory === category && (
-                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary-500 rounded-full"></span>
-              )}
-            </button>
-          ))}
-        </div>
-
-        {/* 右侧：类型选择 + 搜索框 */}
-        <div className="flex items-center gap-2">
-          <AppTypeSelector value={currentType} onChange={setCurrentType} />
-          <Input
-            showClearIcon
-            wrapperClassName="w-full max-w-xs"
-            placeholder={
-              t("app.newAppFromTemplate.searchAllTemplate") as string
-            }
-            value={keywords}
-            onChange={(e) => handleKeywordsChange(e.target.value)}
-            onClear={() => handleKeywordsChange("")}
-          />
-        </div>
-      </div>
-
-      <div className="flex items-center justify-start mb-2 mt-3 px-5">
-        <button
-          onClick={onCreateFromBlank}
-          className="text-sm text-blue-600 hover:underline"
+      <div>
+        <div
+          className="flex items-center justify-between border-b border-divider-burn py-3"
+          style={{ marginTop: "0", marginRight: "1.25rem" }}
         >
-          {t("app.newApp.startFromBlank")}
-        </button>
-      </div>
-
-      {/* 主内容区：应用卡片列表 */}
-      <div className="flex-1 overflow-y-auto p-6 pt-2">
-        {searchFilteredList && searchFilteredList.length > 0 && (
-          <>
-            <div className="pb-1 pt-4">
-              {searchKeywords ? (
-                <p className="title-md-semi-bold text-text-tertiary">
-                  {searchFilteredList.length > 1
-                    ? t("app.newApp.foundResults", {
-                        count: searchFilteredList.length,
-                      })
-                    : t("app.newApp.foundResult", {
-                        count: searchFilteredList.length,
-                      })}
-                </p>
-              ) : (
-                <div className="flex h-[22px] items-center">
-                  <AppCategoryLabel
-                    category={currCategory as AppCategories}
-                    className="title-md-semi-bold text-text-primary"
-                  />
-                </div>
-              )}
-            </div>
+          <div className="min-w-[180px] pl-5 pt-2">
+            <span className="title-xl-semi-bold text-text-primary">
+              {t("app.newApp.startFromTemplate")}
+            </span>
+          </div>
+          <div className="flex items-center  p-1.5 ">
             <div
-              className={cn(
-                "grid shrink-0 grid-cols-1 content-start gap-3 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 2k:grid-cols-3",
-              )}
+              style={{ background: "#fff" }}
+              className="border border-components-panel-border rounded-xl"
             >
-              {searchFilteredList.map((app) => (
-                <AppCard
-                  key={app.app_id}
-                  app={app}
-                  canCreate={hasEditPermission}
-                  onCreate={() => {
-                    setCurrApp(app);
-                    setIsShowCreateModal(true);
-                  }}
-                />
-              ))}
+              <AppTypeSelector value={currentType} onChange={setCurrentType} />
             </div>
-          </>
-        )}
-        {(!searchFilteredList || searchFilteredList.length === 0) && (
-          <NoTemplateFound />
-        )}
+            {/* <div className="h-[14px]">
+              <Divider type="vertical" />
+            </div> */}
+            <div
+              style={{ background: "#fff", marginLeft: "10px" }}
+              className="border border-components-panel-border rounded-xl"
+            >
+              <Input
+                showClearIcon
+                wrapperClassName="w-full flex-1"
+                className="bg-transparent hover:border-transparent hover:bg-transparent focus:border-transparent focus:bg-transparent focus:shadow-none"
+                placeholder={
+                  t("app.newAppFromTemplate.searchAllTemplate") as string
+                }
+                value={keywords}
+                onChange={(e) => handleKeywordsChange(e.target.value)}
+                onClear={() => handleKeywordsChange("")}
+              />
+            </div>
+          </div>
+          {/* <div className="h-8 w-[180px]"></div> */}
+        </div>
       </div>
-
-      {/* 创建模态框 */}
+      <div className="relative flex flex-1 overflow-y-auto">
+        {!searchKeywords && (
+          <div className="h-full w-[200px] p-4">
+            <Sidebar
+              current={currCategory as AppCategories}
+              categories={categories}
+              onClick={(category) => {
+                setCurrCategory(category);
+              }}
+              onCreateFromBlank={onCreateFromBlank}
+            />
+          </div>
+        )}
+        <div className="h-full flex-1 shrink-0 grow overflow-auto border-l border-divider-burn p-6 pt-2">
+          {searchFilteredList && searchFilteredList.length > 0 && (
+            <>
+              <div className="pb-1 pt-4">
+                {searchKeywords ? (
+                  <p className="title-md-semi-bold text-text-tertiary">
+                    {searchFilteredList.length > 1
+                      ? t("app.newApp.foundResults", {
+                          count: searchFilteredList.length,
+                        })
+                      : t("app.newApp.foundResult", {
+                          count: searchFilteredList.length,
+                        })}
+                  </p>
+                ) : (
+                  <div className="flex h-[22px] items-center">
+                    <AppCategoryLabel
+                      category={currCategory as AppCategories}
+                      className="title-md-semi-bold text-text-primary"
+                    />
+                  </div>
+                )}
+              </div>
+              <div
+                className={cn(
+                  "grid shrink-0 grid-cols-1 content-start gap-3 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 2k:grid-cols-6",
+                )}
+              >
+                {searchFilteredList.map((app) => (
+                  <AppCard
+                    key={app.app_id}
+                    app={app}
+                    canCreate={hasEditPermission}
+                    onCreate={() => {
+                      setCurrApp(app);
+                      setIsShowCreateModal(true);
+                    }}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+          {(!searchFilteredList || searchFilteredList.length === 0) && (
+            <NoTemplateFound />
+          )}
+        </div>
+      </div>
       {isShowCreateModal && (
         <CreateAppModal
           appIconType={currApp?.app.icon_type || "emoji"}
