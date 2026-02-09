@@ -1,0 +1,25 @@
+.app_list_card_box {
+  padding-right: 3rem;
+}
+.app_list_card_top {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.app_card_container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 每行显示3个 */
+  gap: 16px;
+}
+.app_card_newApp {
+  width: 32.5%;
+}
+.app_list_w100 {
+  width: 100%;
+}
+.app_chose_card {
+  background-color: #f3f8ff;
+}
+.app_chose_active {
+  background: #fff;
+}

@@ -23,7 +23,7 @@ const Header = () => {
   const systemFeatures = useGlobalPublicStore(s => s.systemFeatures)
 
   return (
-    <div className="flex w-full items-center justify-between p-6">
+    <div className="flex w-full items-center p-6">
       {systemFeatures.branding.enabled && systemFeatures.branding.login_page_logo
         ? (
             <img
@@ -33,7 +33,8 @@ const Header = () => {
             />
           )
         : <DifyLogo size="large" />}
-      <div className="flex items-center gap-1">
+      <span className='ml-4 text-[22px] font-semibold'>拓维智能体平台</span>
+      {/* <div className="flex items-center gap-1">
         <LocaleSigninSelect
           value={locale}
           items={languages.filter(item => item.supported)}
@@ -43,7 +44,7 @@ const Header = () => {
         />
         <Divider type="vertical" className="mx-0 ml-2 h-4" />
         <ThemeSelector />
-      </div>
+      </div> */}
     </div>
   )
 }

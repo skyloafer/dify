@@ -27,6 +27,7 @@ import { getRedirection } from '@/utils/app-redirection'
 import { cn } from '@/utils/classnames'
 import AppCard from '../app-card'
 import Sidebar, { AppCategories, AppCategoryLabel } from './sidebar'
+import { basePath } from '@/utils/var'
 
 type AppsProps = {
   onSuccess?: () => void
@@ -161,10 +162,27 @@ const Apps = ({
     )
   }
 
+  const handleClose = () => {
+    if (onSuccess) {
+      onSuccess();
+    }
+  };
+
   return (
     <div className="flex h-full flex-col">
       <div className="flex items-center justify-between border-b border-divider-burn py-3">
-        <div className="min-w-[180px] pl-5">
+        <div
+          className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-[10px] bg-components-button-tertiary-bg hover:bg-components-button-tertiary-bg-hover ml-5 mt-3"
+          style={{ marginBottom: "10px" }}
+          onClick={handleClose}
+        >
+          <img
+            src={`${basePath}/icon/FH-icon.png`}
+            alt=""
+            style={{ width: "20px", height: "20px" }}
+          />
+        </div>
+        <div className="min-w-[180px] pl-5 pt-2">
           <span className="title-xl-semi-bold text-text-primary">{t('newApp.startFromTemplate', { ns: 'app' })}</span>
         </div>
         <div className="flex max-w-[548px] flex-1 items-center rounded-xl border border-components-panel-border bg-components-panel-bg-blur p-1.5 shadow-md">

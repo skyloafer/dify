@@ -1,0 +1,8 @@
+.background {
+  background-image: url('./assets/background.png');
+  background-size: cover;
+}
+.login {
+  padding: 40px;
+  box-sizing: content-box;
+}

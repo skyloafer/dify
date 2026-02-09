@@ -14,6 +14,7 @@ import { FileArrow01, FilePlus01, FilePlus02 } from '@/app/components/base/icons
 import AppListContext from '@/context/app-list-context'
 import { useProviderContext } from '@/context/provider-context'
 import { cn } from '@/utils/classnames'
+import { basePath } from "@/utils/var";
 
 const CreateAppModal = dynamic(() => import('@/app/components/app/create-app-modal'), {
   ssr: false,
@@ -74,6 +75,13 @@ const CreateAppCard = ({
       )}
     >
       <div className="grow rounded-t-xl p-2">
+        <div className="">
+          <img
+            src={`${basePath}/icon/add-icon.png`}
+            alt=""
+            style={{ width: "26px", height: "26px", marginRight: "30px" }}
+          />
+        </div>
         <div className="px-6 pb-1 pt-2 text-xs font-medium leading-[18px] text-text-tertiary">{t('createApp', { ns: 'app' })}</div>
         <button type="button" className="mb-1 flex w-full cursor-pointer items-center rounded-lg px-6 py-[7px] text-[13px] font-medium leading-[18px] text-text-tertiary hover:bg-state-base-hover hover:text-text-secondary" onClick={() => setShowNewAppModal(true)}>
           <FilePlus01 className="mr-2 h-4 w-4 shrink-0" />

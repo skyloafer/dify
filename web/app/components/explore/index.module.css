@@ -1,0 +1,7 @@
+.bgImg{
+  background-image: url('./logo-bg.png');
+  background-repeat: no-repeat; /* 背景图片不重复 */
+  background-position: top; /* 背景图片居中 */
+  width: 100%; /* 元素宽度 */
+  background-color: #fff;
+}

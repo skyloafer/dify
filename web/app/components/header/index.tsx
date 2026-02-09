@@ -56,6 +56,7 @@ const Header = () => {
               />
             )
           : <DifyLogo />}
+          <span className='ml-4 text-[22px] font-semibold'>拓维智能体平台</span>
       </Link>
     </h1>
   )

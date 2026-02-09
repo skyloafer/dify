@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   autofix:
-    if: github.repository == 'langgenius/dify'
+    if: github.repository == 'skyloafer/dify'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6

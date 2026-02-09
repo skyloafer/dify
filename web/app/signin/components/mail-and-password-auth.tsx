@@ -148,7 +148,7 @@ export default function MailAndPasswordAuth({ isInvite, isEmailSetup, allowRegis
             placeholder={t('passwordPlaceholder', { ns: 'login' }) || ''}
             tabIndex={2}
           />
-          <div className="absolute inset-y-0 right-0 flex items-center">
+          {/* <div className="absolute inset-y-0 right-0 flex items-center">
             <Button
               type="button"
               variant="ghost"
@@ -156,7 +156,7 @@ export default function MailAndPasswordAuth({ isInvite, isEmailSetup, allowRegis
             >
               {showPassword ? '👀' : '😝'}
             </Button>
-          </div>
+          </div> */}
         </div>
       </div>
 

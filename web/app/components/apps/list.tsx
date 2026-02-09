@@ -63,7 +63,7 @@ const List: FC<Props> = ({
   const { t } = useTranslation()
   const { systemFeatures } = useGlobalPublicStore()
   const router = useRouter()
-  const { isCurrentWorkspaceEditor, isCurrentWorkspaceDatasetOperator, isLoadingCurrentWorkspace } = useAppContext()
+  const { isCurrentWorkspaceEditor, isCurrentWorkspaceDatasetOperator, isLoadingCurrentWorkspace, isCurrentWorkspaceManager } = useAppContext()
   const showTagManagementModal = useTagStore(s => s.showTagManagementModal)
   const [activeTab, setActiveTab] = useQueryState(
     'category',
@@ -217,12 +217,14 @@ const List: FC<Props> = ({
             options={options}
           />
           <div className="flex items-center gap-2">
-            <CheckboxWithLabel
-              className="mr-2"
-              label={t('showMyCreatedAppsOnly', { ns: 'app' })}
-              isChecked={isCreatedByMe}
-              onChange={handleCreatedByMeChange}
-            />
+            {isCurrentWorkspaceManager && (
+              <CheckboxWithLabel
+                className="mr-2"
+                label={t('showMyCreatedAppsOnly', { ns: 'app' })}
+                isChecked={isCreatedByMe}
+                onChange={handleCreatedByMeChange}
+              />
+            )}
             <TagFilter type="app" value={tagFilterValue} onChange={handleTagsChange} />
             <Input
               showLeftIcon
@@ -276,9 +278,9 @@ const List: FC<Props> = ({
             <span className="system-xs-regular">{t('newApp.dropDSLToCreateApp', { ns: 'app' })}</span>
           </div>
         )}
-        {!systemFeatures.branding.enabled && (
+        {/* {!systemFeatures.branding.enabled && (
           <Footer />
-        )}
+        )} */}
         <CheckModal />
         <div ref={anchorRef} className="h-0"> </div>
         {showTagManagementModal && (

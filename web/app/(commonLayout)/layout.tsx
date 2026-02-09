@@ -12,6 +12,7 @@ import { AppContextProvider } from '@/context/app-context'
 import { EventEmitterContextProvider } from '@/context/event-emitter'
 import { ModalContextProvider } from '@/context/modal-context'
 import { ProviderContextProvider } from '@/context/provider-context'
+import { AiDeliveryProvider } from '@/context/ai-delivery-context'
 import PartnerStack from '../components/billing/partner-stack'
 import Splash from '../components/splash'
 
@@ -25,14 +26,10 @@ const Layout = ({ children }: { children: ReactNode }) => {
           <EventEmitterContextProvider>
             <ProviderContextProvider>
               <ModalContextProvider>
-                <HeaderWrapper>
-                  <Header />
-                </HeaderWrapper>
-                {children}
-                <PartnerStack />
-                <ReadmePanel />
-                <GotoAnything />
-                <Splash />
+                <AiDeliveryProvider>
+                  {children}
+                  <GotoAnything />
+                </AiDeliveryProvider>
               </ModalContextProvider>
             </ProviderContextProvider>
           </EventEmitterContextProvider>

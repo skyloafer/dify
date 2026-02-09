@@ -130,9 +130,14 @@ function CreateApp({ onClose, onSuccess, onCreateFromTemplate, defaultAppMode }:
                     title={t('types.workflow', { ns: 'app' })}
                     description={t('newApp.workflowShortDescription', { ns: 'app' })}
                     icon={(
-                      <div className="flex h-6 w-6 items-center justify-center rounded-md bg-components-icon-bg-indigo-solid">
-                        <RiExchange2Fill className="h-4 w-4 text-components-avatar-shape-fill-stop-100" />
-                      </div>
+                      // <div className="flex h-6 w-6 items-center justify-center rounded-md bg-components-icon-bg-indigo-solid">
+                      //   <RiExchange2Fill className="h-4 w-4 text-components-avatar-shape-fill-stop-100" />
+                      // </div>
+                      <img
+                        src={`${basePath}/icon/GZL-icon.png`}
+                        alt=""
+                        style={{ width: "20px", height: "20px" }}
+                      />
                     )}
                     onClick={() => {
                       setAppMode(AppModeEnum.WORKFLOW)
@@ -143,9 +148,14 @@ function CreateApp({ onClose, onSuccess, onCreateFromTemplate, defaultAppMode }:
                     title={t('types.advanced', { ns: 'app' })}
                     description={t('newApp.advancedShortDescription', { ns: 'app' })}
                     icon={(
-                      <div className="flex h-6 w-6 items-center justify-center rounded-md bg-components-icon-bg-blue-light-solid">
-                        <BubbleTextMod className="h-4 w-4 text-components-avatar-shape-fill-stop-100" />
-                      </div>
+                      // <div className="flex h-6 w-6 items-center justify-center rounded-md bg-components-icon-bg-blue-light-solid">
+                      //   <BubbleTextMod className="h-4 w-4 text-components-avatar-shape-fill-stop-100" />
+                      // </div>
+                      <img
+                        src={`${basePath}/icon/CHAT-icon.png`}
+                        alt=""
+                        style={{ width: "20px", height: "20px" }}
+                      />
                     )}
                     onClick={() => {
                       setAppMode(AppModeEnum.ADVANCED_CHAT)

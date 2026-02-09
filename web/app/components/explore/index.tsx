@@ -11,6 +11,8 @@ import { useAppContext } from '@/context/app-context'
 import ExploreContext from '@/context/explore-context'
 import useDocumentTitle from '@/hooks/use-document-title'
 import { useMembers } from '@/service/use-common'
+import { cn } from '@/utils/classnames'
+import styles from './index.module.css'
 
 export type IExploreProps = {
   children: React.ReactNode
@@ -53,7 +55,7 @@ const Explore: FC<IExploreProps> = ({
   }
 
   return (
-    <div className="flex h-full overflow-hidden border-t border-divider-regular bg-background-body">
+    <div className={cn(styles.bgImg, 'flex h-full overflow-hidden border-t border-divider-regular')}>
       <ExploreContext.Provider
         value={
           {
@@ -70,7 +72,7 @@ const Explore: FC<IExploreProps> = ({
           }
         }
       >
-        <Sidebar controlUpdateInstalledApps={controlUpdateInstalledApps} />
+        {/* <Sidebar controlUpdateInstalledApps={controlUpdateInstalledApps} /> */}
         <div className="w-0 grow">
           {children}
         </div>
