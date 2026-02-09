@@ -1,5 +1,5 @@
 "use client";
-import cn from "classnames";
+import { cn } from '@/utils/classnames'
 import type { App } from "@/models/explore";
 import AppIcon from "@/app/components/base/app-icon";
 import s from "../app-list/style.module.css";
